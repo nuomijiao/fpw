@@ -14,12 +14,12 @@ use app\lib\exception\TokenException;
 
 class LoginToken extends Token
 {
-    public function get($ac, $se, $login_or_register = 'login', $id = null)
+    public function get($mobile, $pwd, $login_or_register = 'login', $id = null)
     {
 
         if ('login' == $login_or_register) {
             //如果是登陆
-            $user = UserModel::checkUser($ac, $se);
+            $user = UserModel::checkUser($mobile, $pwd);
             if (!$user) {
                 throw new LogAndRegException([
                     'msg' => '手机号或密码不正确',

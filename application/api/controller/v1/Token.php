@@ -15,11 +15,11 @@ use app\api\validate\LoginTokenGet;
 
 class Token extends BaseController
 {
-    public function getLoginToken($ac = '', $se = '')
+    public function getLoginToken($mobile = '', $pwd = '')
     {
         (new LoginTokenGet())->goCheck();
         $log_reg = new LoginToken();
-        $token = $log_reg->get($ac, $se);
+        $token = $log_reg->get($mobile, $pwd);
         return json([
             'token'=> $token,
         ]);

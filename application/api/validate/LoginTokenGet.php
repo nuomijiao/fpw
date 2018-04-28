@@ -12,12 +12,12 @@ namespace app\api\validate;
 class LoginTokenGet extends BaseValidate
 {
     protected $rule = [
-        'ac' => 'require|isMobile',
-        'se' => 'require|isNotEmpty'
+        'mobile' => 'require|isMobile',
+        'pwd' => 'require|isNotEmpty'
     ];
 
     protected $message = [
-        'ac' => '请填写正确的手机号',
-        'se' => '密码不能为空',
+        'mobile' => '请填写正确的手机号',
+        'pwd' => '密码不能为空',
     ];
 }

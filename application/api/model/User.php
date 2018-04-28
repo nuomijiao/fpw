@@ -17,9 +17,9 @@ class User extends BaseModel
         return $user;
     }
 
-    public static function checkUser($ac, $se)
+    public static function checkUser($mobile, $pwd)
     {
-        $user = self::where(['mobile'=>$ac, 'password'=>md5($se)])->find();
+        $user = self::where(['mobile'=>$mobile, 'password'=>md5($pwd)])->find();
         return $user;
     }
 
