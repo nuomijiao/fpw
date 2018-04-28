@@ -19,14 +19,22 @@ class LoginToken extends Token
 
         if ('login' == $login_or_register) {
             //如果是登陆
-            $user = UserModel::checkUser($mobile, $pwd);
-            if (!$user) {
+            $mobile = UserModel::checkMobile($mobile);
+            if (!$mobile) {
                 throw new LogAndRegException([
-                    'msg' => '手机号或密码不正确',
-                    'errorCode' => 20003
+                    'msg' => '手机号还未注册',
+                    'errorCode' => 20005,
                 ]);
             } else {
-                $uid = $user->id;
+                $user = UserModel::checkUser($mobile, $pwd);
+                if (!$user) {
+                    throw new LogAndRegException([
+                        'msg' => '手机号或密码不正确',
+                        'errorCode' => 20003
+                    ]);
+                } else {
+                    $uid = $user->id;
+                }
             }
         } else if ('register' == $login_or_register) {
             //如果是注册
