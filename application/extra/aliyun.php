@@ -18,7 +18,7 @@ return [
     //验证码过期时间
     'sms_code_expire' => 7200,
     //同一手机当天限制次数
-    'sms_mobile_limit' => 1,
+    'sms_mobile_limit' => 10,
     //同一ip当天限制次数
-    'sms_ip_limit' => 1,
+    'sms_ip_limit' => 10,
 ];

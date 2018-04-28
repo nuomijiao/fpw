@@ -25,4 +25,10 @@ class TmpPic extends Model
             return UploadImgTypeEnum::DetailImg;
         }
     }
+
+    public static function getInfoByName($uid, $name)
+    {
+        $picInfo = self::where(['user_id'=>$uid, 'origin_name'=>$name])->select();
+        return $picInfo;
+    }
 }

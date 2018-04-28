@@ -11,6 +11,6 @@ namespace app\lib\exception;
 
 class GoodsException extends BaseException
 {
-    public $msg = '商品图片上传失败';
+    public $msg = '图片已被删除或不存在';
     public $errorCode = 30001;
 }

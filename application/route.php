@@ -21,6 +21,7 @@ Route::post('api/:version/token/login', 'api/:version.Token/getLoginToken');
 //上传商品图片
 Route::post('api/:version/addgoods/img', 'api/:version.AddGoods/uploadImg');
 //删除商品图片
+Route::get('api/:version/delpic/:name', 'api/:version.AddGoods/deleteTmpPic');
 
 //上传商品属性
 Route::post('api/:version/addgoods/info', 'api/:version.AddGoods/addGoods');
