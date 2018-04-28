@@ -8,16 +8,16 @@
 
 namespace app\api\controller\v1;
 
-
 use app\api\controller\BaseController;
+use app\api\model\TmpPic as TmpPicModel;
+use app\api\model\User as UserModel;
+use app\api\service\Token as TokenService;
 use app\api\validate\GoodsNew;
 use app\api\validate\PictureNew;
-use app\api\model\TmpPic as TmpPicModel;
-use app\lib\exception\GoodsException;
-use app\api\service\Token as TokenService;
-use app\api\model\User as UserModel;
+use app\lib\exception\SuccessMessage;
 use app\lib\exception\UserException;
 use think\Exception;
+use app\api\model\Goods as GoodsModel;
 
 class AddGoods extends BaseController
 {
@@ -35,7 +35,7 @@ class AddGoods extends BaseController
         $pic_type = $request->param('pic_type');
         //图片原始名称
         $origin_info = $pic->getInfo();
-        $info = $pic->move(ROOT_PATH.'public_html'.DS.'tmp_pic');
+        $info = $pic->rule('uniqid')->move(ROOT_PATH.'public_html'.DS.'tmp_pic');
         if ($info) {
             $dataArray = [
                 'user_id' => $uid,
@@ -50,6 +50,11 @@ class AddGoods extends BaseController
         }
     }
 
+    public function deleteTmpPic()
+    {
+
+    }
+
     public function addGoods()
     {
         $validate = new GoodsNew();
@@ -60,5 +65,11 @@ class AddGoods extends BaseController
             throw new UserException();
         }
         $dataArray = $validate->getDataByRule($request->post());
+        $goodsArray = array_merge($dataArray, ['user_id' => $uid]);
+        unset($goodsArray['main_img_url'], $goodsArray['detail_img_url']);
+        $goods = GoodsModel::create($goodsArray);
+        $goods->mainImg()->saveAll($dataArray['main_img_url']);
+        $goods->detailImg()->saveAll($dataArray['detail_img_url']);
+        throw new SuccessMessage();
     }
 }
