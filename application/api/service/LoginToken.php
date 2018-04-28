@@ -19,8 +19,8 @@ class LoginToken extends Token
 
         if ('login' == $login_or_register) {
             //如果是登陆
-            $mobile = UserModel::checkMobile($mobile);
-            if (!$mobile) {
+            $phone = UserModel::checkMobile($mobile);
+            if (!$phone) {
                 throw new LogAndRegException([
                     'msg' => '手机号还未注册',
                     'errorCode' => 20005,
