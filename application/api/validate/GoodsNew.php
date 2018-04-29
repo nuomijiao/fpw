@@ -60,7 +60,7 @@ class GoodsNew extends BaseValidate
     
     public function isTimeStamp($value)
     {
-        if (strtotime(date('m-d-Y H:i:s', $value)) == $value) {
+        if (strtotime(date('Y-m-d H:i:s', $value)) == $value) {
             return true;
         } else {
             return false;
