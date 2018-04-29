@@ -16,7 +16,7 @@ class GoodsNew extends BaseValidate
         'detail_img_url' => 'require|array',
         'goods_number' => 'require|isNotEmpty',
         'goods_name' => 'require|isNotEmpty',
-        'category' => '',
+        'category' => 'notRequire',
         'starting_price' => 'require|number',
         'increments_price' => 'require|number',
         'deposit' => 'require|number',
@@ -28,12 +28,12 @@ class GoodsNew extends BaseValidate
         'zz' => 'require|isNotEmpty',
         'jm' => 'require|isNotEmpty',
         'wm' => 'require|isNotEmpty',
-        'hd' => '',
-        'tl' => '',
-        'rr' => '',
-        'tq' => '',
-        'purpose' => '',
-        'detail' => '',
+        'hd' => 'notRequire',
+        'tl' => 'notRequire',
+        'rr' => 'notRequire',
+        'tq' => 'notRequire',
+        'purpose' => 'notRequire',
+        'detail' => 'notRequire',
         'start_time' => 'require|isTimeStamp',
         'end_time' => 'require|isTimeStamp',
     ];
@@ -65,5 +65,10 @@ class GoodsNew extends BaseValidate
         } else {
             return false;
         }
+    }
+
+    public function notRequire($value)
+    {
+        return true;
     }
 }
