@@ -28,11 +28,11 @@ class TmpPic extends Model
 
     public static function getInfoByName($uid, $name)
     {
-        $picInfo = self::where(['user_id'=>$uid, 'origin_name'=>$name])->select();
+        $picInfo = self::where(['user_id'=>$uid, 'img_url'=>$name])->select();
         return $picInfo;
     }
 
-    public static function DelTmpPicByImgUrl($img)
+    public static function DelTmpPicByImgUrl($img, $uid)
     {
         self::where('img_url', 'in', $img)->delete();
     }
