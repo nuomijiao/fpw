@@ -37,7 +37,7 @@ class Goods extends BaseController
         $goods = new GoodsService();
         $result = $goods->checkIsImg($originInfo);
         if ($result) {
-            $info = $pic->rule('uniqid')->move(ROOT_PATH.'public_html'.DS.'tmp_pic');
+            $info = $picObject->rule('uniqid')->move(ROOT_PATH.'public_html'.DS.'tmp_pic');
             if ($info) {
                 $dataArray = [
                     'user_id' => $uid,
