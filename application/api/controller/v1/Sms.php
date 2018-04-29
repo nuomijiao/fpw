@@ -17,7 +17,7 @@ use app\lib\exception\LogAndRegException;
 use app\lib\exception\SuccessMessage;
 use think\Exception;
 
-class SendSms extends BaseController
+class Sms extends BaseController
 {
     public function registerSms()
     {

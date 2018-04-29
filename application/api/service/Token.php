@@ -33,7 +33,6 @@ class Token
         $token = Request::instance()->header('token');
         $vars = Cache::get($token);
         if (!$vars) {
-            cache($token, NULL);
             throw new TokenException();
         } else {
             if (!is_array($vars)) {

@@ -31,4 +31,10 @@ class TmpPic extends Model
         $picInfo = self::where(['user_id'=>$uid, 'origin_name'=>$name])->select();
         return $picInfo;
     }
+
+    public static function DelTmpPicByImgUrl($img)
+    {
+        self::where('img_url', 'in', $img)->delete();
+    }
+
 }
