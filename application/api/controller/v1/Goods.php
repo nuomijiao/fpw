@@ -23,7 +23,7 @@ class Goods extends BaseController
 {
     public function uploadImg()
     {
-        $pic = Request::instance()->file();
+        $pic = $_FILES;
         var_dump($pic);die;
 //        $request = (new PictureNew())->goCheck('upload');
 //        //根据Token来获取uid
