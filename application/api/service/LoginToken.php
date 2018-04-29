@@ -49,7 +49,7 @@ class LoginToken extends Token
 
     private function saveToCache($values){
         $token = self::generateToken();
-        $expire_in = config('setting.token_expire_in');
+        $expire_in = config('secure.token_expire_in');
         $result = cache($token, json_encode($values), $expire_in);
         if(!$result){
             throw new TokenException([
