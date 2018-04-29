@@ -32,7 +32,7 @@ class TmpPic extends Model
         return $picInfo;
     }
 
-    public static function DelTmpPicByImgUrl($img, $uid)
+    public static function DelTmpPicByImgUrl($img)
     {
         self::where('img_url', 'in', $img)->delete();
     }
