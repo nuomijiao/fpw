@@ -27,7 +27,7 @@ class Goods extends BaseController
         //根据Token来获取uid
         $uid = TokenService::getCurrentUid();
         $pic = $request->file();
-        var_dump($pic);die;
+
         $picObject = $pic['file'];
         $picType = $request->param('pic_type');
 
