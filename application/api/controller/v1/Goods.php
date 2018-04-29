@@ -17,34 +17,43 @@ use app\api\validate\PictureNew;
 use app\lib\exception\ParameterException;
 use app\lib\exception\SuccessMessage;
 use think\Exception;
-use think\Request;
 
 class Goods extends BaseController
 {
     public function uploadImg()
     {
-        $pic = $_FILES;
-        var_dump($pic);die;
-//        $request = (new PictureNew())->goCheck('upload');
-//        //根据Token来获取uid
-//        $uid = TokenService::getCurrentUid();
-//        $pic = $request->file('goods_pic');
-//        $pic_type = $request->param('pic_type');
-//        //图片原始名称
-//        $origin_info = $pic->getInfo();
-//        $info = $pic->rule('uniqid')->move(ROOT_PATH.'public_html'.DS.'tmp_pic');
-//        if ($info) {
-//            $dataArray = [
-//                'user_id' => $uid,
-//                'img_url' => $info->getSaveName(),
-//                'pic_type' => $pic_type,
-//                'origin_name' => $origin_info['name'],
-//            ];
-//            TmpPicModel::create($dataArray);
-//            return json(['errorCode'=>'ok', 'pic'=>$info->getSaveName(), 'type'=>$pic_type]);
-//        } else {
-//            throw new Exception($info->getError());
-//        }
+        $validate = new PictureNew();
+        $request = $validate->goCheck();
+        //根据Token来获取uid
+        $uid = TokenService::getCurrentUid();
+        $pic = $request->file();
+        $picObject = $pic[0];
+
+        $picType = $request->param('pic_type');
+        //图片原始名称
+        $originInfo = $picObject->getInfo();
+        //验证上传文件是否为图片格式
+        $goods = new GoodsService();
+        $result = $goods->checkIsImg($originInfo);
+        if ($result) {
+            $info = $pic->rule('uniqid')->move(ROOT_PATH.'public_html'.DS.'tmp_pic');
+            if ($info) {
+                $dataArray = [
+                    'user_id' => $uid,
+                    'img_url' => $info->getSaveName(),
+                    'pic_type' => $picType,
+                    'origin_name' => $originInfo['name'],
+                ];
+                TmpPicModel::create($dataArray);
+                return json(['errorCode'=>'ok', 'pic'=>$info->getSaveName(), 'type'=>$picType]);
+            } else {
+                throw new Exception($info->getError());
+            }
+        } else {
+            throw new ParameterException([
+                'msg' => '上传文件格式有误',
+            ]);
+        }
     }
 
     public function deleteTmpPic($name)
