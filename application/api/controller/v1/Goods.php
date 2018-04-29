@@ -28,8 +28,8 @@ class Goods extends BaseController
         $uid = TokenService::getCurrentUid();
         $pic = $request->file();
         $picObject = $pic[0];
-
         $picType = $request->param('pic_type');
+
         //图片原始名称
         $originInfo = $picObject->getInfo();
         //验证上传文件是否为图片格式
