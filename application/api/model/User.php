@@ -11,6 +11,11 @@ namespace app\api\model;
 
 class User extends BaseModel
 {
+    public function address()
+    {
+        return $this->hasMany('Address', 'user_id', 'id');
+    }
+
     public static function checkMobile($mobile)
     {
         $user = self::where('mobile', '=', $mobile)->find();
