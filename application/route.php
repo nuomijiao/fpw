@@ -26,3 +26,13 @@ Route::get('api/:version/del_tmp_pic/:name', 'api/:version.Goods/deleteTmpPic');
 //上传商品属性
 Route::post('api/:version/goods/upload_info', 'api/:version.Goods/addGoods');
 
+//添加用户地址
+Route::post('api/:version/address/add', 'api/:version.Address/createAddress');
+
+//删除用户地址
+Route::get('api/:version/address/delete/:id', 'api/:version.Address/deleteAddress');
+
+//设置默认地址
+Route::get('api/:version/address/default/:id', 'api/:version.Address/setDefault');
+
+

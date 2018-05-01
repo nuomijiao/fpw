@@ -11,12 +11,23 @@ namespace app\api\service;
 use app\api\model\Goods as GoodsModel;
 use app\api\model\TmpPic as TmpPicModel;
 use app\lib\exception\GoodsException;
+use think\Exception;
 
 class Goods
 {
-    public function add($dataArray, $uid)
+    private $uid;
+
+    function __construct($uid = '')
     {
-        $goodsArray = array_merge($dataArray, ['user_id' => $uid]);
+        if (!$uid) {
+            throw new Exception('用户id不能为空');
+        }
+        $this->uid = $uid;
+    }
+
+    public function add($dataArray)
+    {
+        $goodsArray = array_merge($dataArray, ['user_id' => $this->uid]);
         unset($goodsArray['main_img_url'], $goodsArray['detail_img_url']);
 
         $goods = GoodsModel::create($goodsArray);
@@ -51,9 +62,9 @@ class Goods
         return $lastDataArray;
     }
 
-    public function delTmpPic($uid, $name)
+    public function delTmpPic($name)
     {
-        $picInfo = TmpPicModel::getInfoByName($uid, $name);
+        $picInfo = TmpPicModel::getInfoByName($this->uid, $name);
         if ($picInfo->isEmpty()) {
             throw new GoodsException();
         } else {

@@ -34,7 +34,7 @@ class Goods extends BaseController
         //图片原始名称
         $originInfo = $picObject->getInfo();
         //验证上传文件是否为图片格式
-        $goods = new GoodsService();
+        $goods = new GoodsService($uid);
         $result = $goods->checkIsImg($originInfo);
         if ($result) {
             $info = $picObject->rule('uniqid')->move(ROOT_PATH.'public_html'.DS.'tmp_pic');
@@ -63,8 +63,8 @@ class Goods extends BaseController
             throw new ParameterException();
         }
         $uid = TokenService::getCurrentUid();
-        $goods = new GoodsService();
-        $goods->delTmpPic($uid, $name);
+        $goods = new GoodsService($uid);
+        $goods->delTmpPic($name);
         throw new SuccessMessage();
     }
 
@@ -74,8 +74,8 @@ class Goods extends BaseController
         $request = $validate->goCheck();
         $uid = TokenService::getCurrentUid();
         $dataArray = $validate->getDataByRule($request->post());
-        $goods = new GoodsService();
-        $goods->add($dataArray, $uid);
+        $goods = new GoodsService($uid);
+        $goods->add($dataArray);
         throw new SuccessMessage();
     }
 

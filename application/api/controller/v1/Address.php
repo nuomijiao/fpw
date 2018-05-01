@@ -13,7 +13,11 @@ use app\api\controller\BaseController;
 use app\api\validate\AddressNew;
 use app\api\service\Token as TokenService;
 use app\api\model\User as UserModel;
+use app\api\validate\IDMustBePostiveInt;
+use app\lib\exception\SuccessMessage;
+use app\lib\exception\TokenException;
 use app\lib\exception\UserException;
+use app\api\model\Address as AddressModel;
 
 class Address extends BaseController
 {
@@ -27,6 +31,44 @@ class Address extends BaseController
             throw new UserException();
         }
         $dataArray = $validate->getDataByRule($request->post());
+        $user->address()->save($dataArray);
+        throw new SuccessMessage();
+    }
 
+    public function deleteAddress($id = '')
+    {
+        (new IDMustBePostiveInt())->goCheck();
+        $this->checkAddressValid($id);
+        AddressModel::destroy($id);
+        throw new SuccessMessage();
+    }
+
+
+    public function setDefault($id = '')
+    {
+        (new IDMustBePostiveInt())->goCheck();
+        $uid = $this->checkAddressValid($id);
+        AddressModel::selectDefaultById($uid, $id);
+        throw new SuccessMessage();
+    }
+
+    private function checkAddressValid($id)
+    {
+        $address = AddressModel::get($id);
+        if (!$address) {
+            throw new UserException([
+                'msg' => '用户地址不存在',
+                'errorCode' => 40002,
+            ]);
+        }
+        $user_id = TokenService::isValidOperate($address->user_id);
+        if (!$user_id) {
+            throw new TokenException([
+                'msg' => '地址与用户不匹配',
+                'errorCode' => 10003,
+            ]);
+        } else {
+            return $user_id;
+        }
     }
 }

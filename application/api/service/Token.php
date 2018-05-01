@@ -16,10 +16,10 @@ use think\Request;
 
 class Token
 {
-    public function generateToken()
+    public static function generateToken()
     {
         //32个字符组成一组随机字符串
-        $randChars = $this->getRandChar(32);
+        $randChars = self::getRandChar(32);
         //用三组字符串，进行md5加密
         $timestamp = $_SERVER['REQUEST_TIME_FLOAT'];
         //salt 盐
@@ -52,7 +52,7 @@ class Token
         return $uid;
     }
 
-    private function getRandChar($length)
+    private static function getRandChar($length)
     {
         $str = null;
         $strPol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
@@ -65,5 +65,18 @@ class Token
         }
 
         return $str;
+    }
+
+    public static function isValidOperate($checkUID)
+    {
+        if (!$checkUID) {
+            throw new Exception('必须传入一个被检查的UID');
+        }
+        $currentOperateUid = self::getCurrentUid();
+        if ($currentOperateUid == $checkUID) {
+            return $currentOperateUid;
+        } else {
+            return false;
+        }
     }
 }
