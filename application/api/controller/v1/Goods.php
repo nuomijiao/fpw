@@ -13,10 +13,12 @@ use app\api\model\TmpPic as TmpPicModel;
 use app\api\service\Goods as GoodsService;
 use app\api\service\Token as TokenService;
 use app\api\validate\GoodsNew;
+use app\api\validate\PagingParameter;
 use app\api\validate\PictureNew;
 use app\lib\exception\ParameterException;
 use app\lib\exception\SuccessMessage;
 use think\Exception;
+use app\api\model\Goods as GoodsModel;
 
 class Goods extends BaseController
 {
@@ -79,10 +81,23 @@ class Goods extends BaseController
         throw new SuccessMessage();
     }
 
-    public function getAllGoodsByUid()
+    public function getAllGoodsByUser($page = 1, $size = 10)
     {
+        (new PagingParameter())->goCheck();
         $uid = TokenService::getCurrentUid();
-
+        $pagingGoods = GoodsModel::getAllByUser($uid, $page, $size);
+        return json($pagingGoods);die;
+        if ($pagingGoods->isEmpty()) {
+            return json([
+                'data' => [],
+                'current_page' => $pagingGoods->getCurrentPage(),
+            ]);
+        }
+        $data = $pagingGoods->visible(['start_time','end_time','goods_name', 'current_price'])->toArray();
+        return json([
+            'data' => $data,
+            'current_page' => $pagingGoods->getCurrentPage(),
+        ]);
     }
 
 }

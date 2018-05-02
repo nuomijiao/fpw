@@ -27,7 +27,7 @@ class Goods
 
     public function add($dataArray)
     {
-        $goodsArray = array_merge($dataArray, ['user_id' => $this->uid]);
+        $goodsArray = array_merge($dataArray, ['user_id' => $this->uid, 'current_price' => $dataArray['starting_price']]);
         unset($goodsArray['main_img_url'], $goodsArray['detail_img_url']);
 
         $goods = GoodsModel::create($goodsArray);
@@ -87,5 +87,6 @@ class Goods
             return false;
         }
     }
+
 
 }

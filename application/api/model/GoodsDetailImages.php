@@ -13,8 +13,8 @@ class GoodsDetailImages extends BaseModel
 {
     protected $autoWriteTimestamp = true;
 
-    public function getImgUrlAttr()
+    public function getImgUrlAttr($value, $data)
     {
-
+        return $this->prefixImgUrl($value, $data);
     }
 }

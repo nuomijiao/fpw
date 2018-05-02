@@ -25,4 +25,14 @@ class Goods extends BaseModel
     {
         return $this->hasMany('GoodsDetailImages', 'goods_id', 'id');
     }
+
+    public static function getAllByUser($uid, $page, $size)
+    {
+        $pagingData = self::with([
+            'mainImg' => function($query){
+                $query->limit(1);
+            }
+        ])->with('detailImg')->where('user_id', '=', $uid)->paginate($size, true, ['page' => $page]);
+        return $pagingData;
+    }
 }

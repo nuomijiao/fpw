@@ -12,4 +12,9 @@ namespace app\api\model;
 class GoodsMainImages extends BaseModel
 {
     protected $autoWriteTimestamp = true;
+
+    public function getImgUrlAttr($value, $data)
+    {
+        return $this->prefixImgUrl($value, $data);
+    }
 }

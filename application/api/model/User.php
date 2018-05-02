@@ -11,6 +11,9 @@ namespace app\api\model;
 
 class User extends BaseModel
 {
+
+    protected $autoWriteTimestamp = true;
+
     public function address()
     {
         return $this->hasMany('Address', 'user_id', 'id');

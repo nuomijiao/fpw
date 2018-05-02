@@ -22,20 +22,20 @@ Route::post('api/:version/token/login', 'api/:version.Token/getLoginToken');
 Route::post('api/:version/goods/upload_img', 'api/:version.Goods/uploadImg');
 //删除商品图片
 Route::get('api/:version/del_tmp_pic/:name', 'api/:version.Goods/deleteTmpPic');
-
 //上传商品属性
 Route::post('api/:version/goods/upload_info', 'api/:version.Goods/addGoods');
+//查询用户商品
+Route::get('api/:version/goods/by_user', 'api/:version.Goods/getAllGoodsByUser');
 
 //添加用户地址
 Route::post('api/:version/address/add', 'api/:version.Address/createAddress');
-
 //删除用户地址
 Route::get('api/:version/address/delete/:id', 'api/:version.Address/deleteAddress');
-
 //设置默认地址
 Route::get('api/:version/address/default/:id', 'api/:version.Address/setDefault');
-
 //查询所有地址
-Route::get('api/:version/address/all', 'api/:version.Address/getAllAddressByUid');
+Route::get('api/:version/address/all', 'api/:version.Address/getAllAddressByUser');
+
+
 
 
