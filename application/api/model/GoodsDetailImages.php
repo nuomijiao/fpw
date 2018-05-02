@@ -11,5 +11,10 @@ namespace app\api\model;
 
 class GoodsDetailImages extends BaseModel
 {
+    protected $autoWriteTimestamp = true;
 
+    public function getImgUrlAttr()
+    {
+
+    }
 }

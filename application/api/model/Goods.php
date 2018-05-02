@@ -14,6 +14,8 @@ class Goods extends BaseModel
 
     protected $autoWriteTimestamp = true;
 
+    protected $hidden = ['update_time', 'create_time'];
+
     public function mainImg()
     {
         return $this->hasMany('GoodsMainImages', 'goods_id', 'id');

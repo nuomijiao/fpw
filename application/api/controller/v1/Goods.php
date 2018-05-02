@@ -79,6 +79,10 @@ class Goods extends BaseController
         throw new SuccessMessage();
     }
 
-    public function
+    public function getAllGoodsByUid()
+    {
+        $uid = TokenService::getCurrentUid();
+
+    }
 
 }

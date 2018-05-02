@@ -46,12 +46,12 @@ class Goods
         $preDelImg = [];
         foreach ($dataArray['main_img_url'] as $item) {
             rename(ROOT_PATH.'public_html'.DS.'tmp_pic'.DS.$item['img_url'], ROOT_PATH.'public_html'.DS.'goods_pic'.DS.$item['img_url']);
-            array_push($main_img_url, ['img_url'=> "/goods_pic/".$item['img_url']]);
+            array_push($main_img_url, ['img_url'=> "/goods_pic/".$item['img_url'], 'img_from'=>1]);
             array_push($preDelImg, $item['img_url']);
         }
         foreach ($dataArray['detail_img_url'] as $item) {
             rename(ROOT_PATH.'public_html'.DS.'tmp_pic'.DS.$item['img_url'], ROOT_PATH.'public_html'.DS.'goods_pic'.DS.$item['img_url']);
-            array_push($detail_img_url, ['img_url' => "/goods_pic/".$item['img_url']]);
+            array_push($detail_img_url, ['img_url' => "/goods_pic/".$item['img_url'], 'img_from'=>1]);
             array_push($preDelImg, $item['img_url']);
         }
 

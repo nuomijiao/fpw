@@ -11,5 +11,5 @@ namespace app\api\model;
 
 class GoodsMainImages extends BaseModel
 {
-
+    protected $autoWriteTimestamp = true;
 }
