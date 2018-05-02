@@ -79,4 +79,6 @@ class Goods extends BaseController
         throw new SuccessMessage();
     }
 
+    public function
+
 }

@@ -52,7 +52,7 @@ class Address extends BaseController
         throw new SuccessMessage();
     }
 
-    public function getAllAddress()
+    public function getAllAddressByUid()
     {
         $uid = TokenService::getCurrentUid();
         $allAddress = AddressModel::all(['user_id' => $uid]);
