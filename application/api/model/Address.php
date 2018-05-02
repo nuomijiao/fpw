@@ -13,6 +13,8 @@ class Address extends BaseModel
 {
     protected $autoWriteTimestamp = true;
 
+    protected $hidden = ['update_time', 'create_time'];
+
     public static function selectDefaultById($uid, $id)
     {
         self::where('user_id', '=', $uid)->update(['is_moren' => 0]);

@@ -35,4 +35,7 @@ Route::get('api/:version/address/delete/:id', 'api/:version.Address/deleteAddres
 //设置默认地址
 Route::get('api/:version/address/default/:id', 'api/:version.Address/setDefault');
 
+//查询所有地址
+Route::get('api/:version/address/all', 'api/:version.Address/getAllAddress');
+
 

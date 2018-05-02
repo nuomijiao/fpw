@@ -52,6 +52,13 @@ class Address extends BaseController
         throw new SuccessMessage();
     }
 
+    public function getAllAddress()
+    {
+        $uid = TokenService::getCurrentUid();
+        $allAddress = AddressModel::all(['user_id' => $uid]);
+        return json($allAddress);
+    }
+
     private function checkAddressValid($id)
     {
         $address = AddressModel::get($id);
