@@ -179,17 +179,17 @@ class WeChatCallBack extends BaseController
             return "";
         }
         $itemTpl = "<Music>
-                    <Title><!CDATA[%s]></Title>
-                    <Description><!CDATA[%s]></Description>
-                    <MusicUrl><!CDATA[%s]></MusicUrl>
-                    <HQMusicUrl><!CDATA[%s]></HQMusicUrl>
+                    <Title><![CDATA[%s]]></Title>
+                    <Description><![CDATA[%s]]></Description>
+                    <MusicUrl><![CDATA[%s]]></MusicUrl>
+                    <HQMusicUrl><![CDATA[%s]]></HQMusicUrl>
                     </Music>";
         $itemStr = sprintf($itemTpl, $musicArray['Title'], $musicArray['Description'], $musicArray['MusicUrl'], $musicArray['HQMusicUrl']);
         $xmlTpl = "<xml>
-                   <ToUserName><!CDATA[%s]></ToUserName>
-                   <FromUserName><!CDATA[%s]></FromUserName>
+                   <ToUserName><![CDATA[%s]]></ToUserName>
+                   <FromUserName><![CDATA[%s]]></FromUserName>
                    <CreateTime>%s</CreateTime>
-                   <MsgType><!CDATA[music]></MsgType>
+                   <MsgType><![CDATA[%s]]></MsgType>
                    $itemStr
                    </xml>";
         $result = sprintf($xmlTpl, $object->FromUserName, $object->ToUserName, time());
