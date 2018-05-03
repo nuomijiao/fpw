@@ -12,7 +12,7 @@ class Index
             $request = Request::instance();
             $param = $request->param();
             if (!isset($param['code'])) {
-                $redirect_url = $request->domain();
+                $redirect_url = "http://www.5d1.top";
                 $jumpUrl = OAuth::oAuthAuthorize($redirect_url, "snsapi_userinfo", '111');
                 header("Location:$jumpUrl");
             } else {
