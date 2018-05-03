@@ -189,7 +189,7 @@ class WeChatCallBack extends BaseController
                    <ToUserName><![CDATA[%s]]></ToUserName>
                    <FromUserName><![CDATA[%s]]></FromUserName>
                    <CreateTime>%s</CreateTime>
-                   <MsgType><![CDATA[%s]]></MsgType>
+                   <MsgType><![CDATA[music]]></MsgType>
                    $itemStr
                    </xml>";
         $result = sprintf($xmlTpl, $object->FromUserName, $object->ToUserName, time());
