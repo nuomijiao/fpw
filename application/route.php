@@ -12,7 +12,7 @@
 use think\Route;
 
 //微信接口路由
-Route::get('weixin/callback', 'weixin/WeChatCallBack/index');
+Route::rule('weixin/callback', 'weixin/WeChatCallBack/index', 'GET|POST');
 
 //发送验证码
 Route::post('api/:version/sendsms/register', 'api/:version.Sms/registerSms');
