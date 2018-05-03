@@ -7,6 +7,6 @@
  */
 return [
     'appID' => 'wx9a761d4f23468df9',
-    'appScret' => '4cdba3f2fa1bac54cbf416c4c0460e79',
+    'appSecret' => '4cdba3f2fa1bac54cbf416c4c0460e79',
     'token' => 'nuomi',
 ];

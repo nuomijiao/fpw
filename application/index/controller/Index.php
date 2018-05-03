@@ -20,9 +20,6 @@ class Index extends Controller
                 header("Location:$jumpUrl");
             } else {
                 $accessToken = $oAuth->oAuthAccessToken($param['code']);
-                echo "<pre>";
-                print_r($accessToken);
-                echo "</pre>";die;
                 $userInfo = $oAuth->oAuthGetUserInfo($accessToken->access_token, $accessToken->openid);
                 return json_decode($userInfo, true);
             }
