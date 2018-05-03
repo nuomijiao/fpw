@@ -113,7 +113,7 @@ class WeChatCallBack extends BaseController
             $content[] = array("Title" => "", "Description" => "", "PicUrl" => "", "Url" => "");
         } else if (strstr($keyword, "音乐")) {
             $content = array();
-            $content = array("Title" => "嗨骑之歌（伴奏）", 'Description' => '歌手：高颖', 'MusicUrl' => "http://www.5d1.top/music/haiqizhige.flac", "HQMusicUrl" => 'http://www.5d1.top/music/haiqizhige.flac');
+            $content = array("Title" => "嗨骑之歌（伴奏）", 'Description' => '歌手：高颖', 'MusicUrl' => "http://www.5d1.top/music/haiqizhige.mp3", "HQMusicUrl" => 'http://www.5d1.top/music/haiqizhige.mp3');
         } else {
             $content = date("Y-m-d H:i:s",time())."\nOpenID:".$object->FromUserName."\n技术支持 糯米蛟";
         }
