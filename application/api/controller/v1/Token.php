@@ -21,7 +21,7 @@ class Token extends BaseController
         $log_reg = new LoginToken();
         $token = $log_reg->get($mobile, $pwd);
         return json([
-            'errorCode' => 'ok',
+            'error_code' => 'ok',
             'token'=> $token,
         ]);
     }

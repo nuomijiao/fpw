@@ -62,7 +62,7 @@ class Address extends BaseController
                 'errorCode' => 40003
             ]);
         }
-        return json(['errorCode'=>'ok', 'allAddress'=>$allAddress]);
+        return json(['error_code'=>'ok', 'allAddress'=>$allAddress]);
     }
 
     private function checkAddressValid($id)

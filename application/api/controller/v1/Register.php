@@ -52,7 +52,7 @@ class Register extends BaseController
                 $reg = new LoginToken();
                 $token = $reg->get($mobile, $pwd, 'register', $user->id);
                 return json([
-                    'errorCode' => 'ok',
+                    'error_code' => 'ok',
                     'token' => $token,
                 ]);
             }

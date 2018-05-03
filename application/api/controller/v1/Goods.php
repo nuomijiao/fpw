@@ -96,7 +96,7 @@ class Goods extends BaseController
         }
         $data = $pagingGoods->visible(['start_time','end_time','goods_name', 'current_price', 'main_img'])->toArray();
         return json([
-            'errprCode' => 'ok',
+            'error_code' => 'ok',
             'data' => $data,
             'current_page' => $pagingGoods->getCurrentPage(),
         ]);
@@ -113,7 +113,7 @@ class Goods extends BaseController
         }
         $data = $pagingGoods->visible(['start_time','end_time','goods_name', 'current_price', 'main_img'])->toArray();
         return json([
-            'errorCode' => 'ok',
+            'error_code' => 'ok',
             'data' => $data,
             'current_page' => $pagingGoods->getCurrentPage(),
         ]);
@@ -126,7 +126,7 @@ class Goods extends BaseController
         if (!$goods) {
             throw new GoodsException();
         }
-        return json($goods);
+        return json(['error_code'=>'ok', 'goods' =>$goods]);
     }
 
 }
