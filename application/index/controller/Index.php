@@ -12,9 +12,8 @@ class Index
             $request = Request::instance();
             $param = $request->param();
             if (!isset($param['code'])) {
-                $redirect_url = "http://www.5d1.top";
+                $redirect_url = "www.5d1.top";
                 $jumpUrl = OAuth::oAuthAuthorize($redirect_url, "snsapi_userinfo", '111');
-                echo $jumpUrl;die;
                 header("Location:$jumpUrl");
             } else {
                 $accessToken = OAuth::oAuthAccessToken($param['code']);
