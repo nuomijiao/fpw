@@ -15,7 +15,7 @@ class Index extends Controller
             if (!isset($param['code'])) {
                 $redirect_url = "http://www.5d1.top/index/index/index";
                 $jumpUrl = OAuth::oAuthAuthorize($redirect_url, "snsapi_userinfo", '111');
-                echo $jumpUrl;die;
+//                echo $jumpUrl;die;
                 header("Location:$jumpUrl");
             } else {
                 $accessToken = OAuth::oAuthAccessToken($param['code']);
