@@ -23,13 +23,13 @@ class OAuth extends BaseController
     //生成OAuth2.0的URL
     public static function oAuthAuthorize($redirectUrl, $scope, $state = NULL)
     {
-        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".self::appID."&redirect_uri=".$redirectUrl."&response_type=code&scope=".$scope."&state=".$state."#wechat_redirect";
+        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".self::$appID."&redirect_uri=".$redirectUrl."&response_type=code&scope=".$scope."&state=".$state."#wechat_redirect";
         return $url;
     }
 
     public static function oAuthAccessToken($code)
     {
-        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".self::appID."&secret=".self::appSecret."&code=".$code."&grant_type=authorization_code";
+        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".self::$appID."&secret=".self::$appSecret."&code=".$code."&grant_type=authorization_code";
         $accessToken = self::httpRequest($url);
         return json_decode($accessToken);
     }
