@@ -11,28 +11,33 @@ namespace app\weixin\controller;
 
 class OAuth extends BaseController
 {
-    private static $appID = 'wx9a761d4f23468df9';
-    private static $appSecret = '4cdba3f2fa1bac54cbf416c4c0460e79';
+    private $appID;
+    private $appSecret;
 
+    public function __construct()
+    {
+        $this->appID = config('weixin.appID');
+        $this->appSecret = config('weixin.appSecret');
+    }
 
     //生成OAuth2.0的URL
-    public static function oAuthAuthorize($redirectUrl, $scope, $state = NULL)
+    public function oAuthAuthorize($redirectUrl, $scope, $state = NULL)
     {
-        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".self::$appID."&redirect_uri=".$redirectUrl."&response_type=code&scope=".$scope."&state=".$state."#wechat_redirect";
+        $url = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=".$this->appID."&redirect_uri=".$redirectUrl."&response_type=code&scope=".$scope."&state=".$state."#wechat_redirect";
         return $url;
     }
 
-    public static function oAuthAccessToken($code)
+    public function oAuthAccessToken($code)
     {
-        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".self::$appID."&secret=".self::$appSecret."&code=".$code."&grant_type=authorization_code";
-        $accessToken = self::httpRequest($url);
+        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$this->appID."&secret=".$this->appSecret."&code=".$code."&grant_type=authorization_code";
+        $accessToken = $this->httpRequest($url);
         return json_decode($accessToken);
     }
 
-    public static function oAuthGetUserInfo($accessToken, $openID)
+    public function oAuthGetUserInfo($accessToken, $openID)
     {
         $url = "https://api.weixin.qq.com/sns/userinfo?access_token=".$accessToken."&openid=".$openID."&lang=zh_CN";
-        $userInfo = self::httpRequest($url);
+        $userInfo = $this->httpRequest($url);
         return json_decode($userInfo);
     }
 
