@@ -91,7 +91,7 @@ class Goods extends BaseController
         if ($pagingGoods->isEmpty()) {
             throw new GoodsException([
                 'msg' => '商品已见底线',
-                'errorCode' => 30002
+                'errorCode' => 30003
             ]);
         }
         $data = $pagingGoods->visible(['start_time','end_time','goods_name', 'current_price', 'main_img'])->toArray();
@@ -108,21 +108,25 @@ class Goods extends BaseController
         if ($pagingGoods->isEmpty()) {
             throw new GoodsException([
                 'msg' => '商品已见底线',
-                'errorCode' => 30002
+                'errorCode' => 30003
             ]);
         }
         $data = $pagingGoods->visible(['start_time','end_time','goods_name', 'current_price', 'main_img'])->toArray();
         return json([
-            'errprCode' => 'ok',
+            'errorCode' => 'ok',
             'data' => $data,
             'current_page' => $pagingGoods->getCurrentPage(),
         ]);
     }
 
-    public function getOneDetail($id)
+    public function getOneDetail($id = '')
     {
-        $request = (new IDMustBePostiveInt())->goCheck();
-
+        (new IDMustBePostiveInt())->goCheck();
+        $goods = GoodsModel::getGoodsDetail($id);
+        if (!$id) {
+            throw new GoodsException();
+        }
+        return json($goods);
     }
 
 }

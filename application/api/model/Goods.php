@@ -14,7 +14,7 @@ class Goods extends BaseModel
 
     protected $autoWriteTimestamp = true;
 
-    protected $hidden = ['update_time', 'create_time'];
+    protected $hidden = ['update_time', 'create_time', 'recycle', 'check_status'];
 
     public function mainImg()
     {
@@ -36,5 +36,11 @@ class Goods extends BaseModel
     {
         $pagingData = self::with(['mainImg', 'detailImg'])->paginate($size, true, ['page' => $page]);
         return $pagingData;
+    }
+
+    public static function getGoodsDetail($id)
+    {
+        $goods = self::with(['mainImg', 'detailImg'])->find($id);
+        return $goods;
     }
 }

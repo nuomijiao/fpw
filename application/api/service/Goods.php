@@ -66,7 +66,10 @@ class Goods
     {
         $picInfo = TmpPicModel::getInfoByName($this->uid, $name);
         if ($picInfo->isEmpty()) {
-            throw new GoodsException();
+            throw new GoodsException([
+                'msg' => '图片已被删除或不存在',
+                'errorCode' => 30002
+            ]);
         } else {
             $picArray = $picInfo->toArray();
             $picImgUrl = [];
@@ -81,7 +84,7 @@ class Goods
     public function checkIsImg($fileInfo)
     {
         $ext = pathinfo($fileInfo['name'],PATHINFO_EXTENSION);
-        if (in_array($ext, ['jpg', 'png', 'gif', 'JPG', 'PNG', 'GIF']) && in_array($fileInfo['type'], ['image/jpeg', 'image/png', 'image/gif'])) {
+        if (in_array(strtolower($ext), ['jpg', 'png', 'gif']) && in_array($fileInfo['type'], ['image/jpeg', 'image/png', 'image/gif'])) {
             return true;
         } else {
             return false;

@@ -13,7 +13,7 @@ class GoodsDetailImages extends BaseModel
 {
     protected $autoWriteTimestamp = true;
 
-    protected $hidden = ['create_time', 'update_time', 'img_from', 'order'];
+    protected $hidden = ['create_time', 'update_time', 'img_from', 'order', 'goods_id'];
 
     public function getImgUrlAttr($value, $data)
     {
