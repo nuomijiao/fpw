@@ -26,6 +26,10 @@ Route::get('api/:version/del_tmp_pic/:name', 'api/:version.Goods/deleteTmpPic');
 Route::post('api/:version/goods/upload_info', 'api/:version.Goods/addGoods');
 //查询用户商品
 Route::get('api/:version/goods/by_user', 'api/:version.Goods/getAllGoodsByUser');
+//查询所有商品
+Route::get('api/:version/goods/all', 'api/:version.Goods/getAllGoods');
+//查询某一商品详细信息
+Route::get('api/:version/goods/:id', 'api/:version.Goods/getOneDetail');
 
 //添加用户地址
 Route::post('api/:version/address/add', 'api/:version.Address/createAddress');

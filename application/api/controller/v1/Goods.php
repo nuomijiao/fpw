@@ -13,8 +13,10 @@ use app\api\model\TmpPic as TmpPicModel;
 use app\api\service\Goods as GoodsService;
 use app\api\service\Token as TokenService;
 use app\api\validate\GoodsNew;
+use app\api\validate\IDMustBePostiveInt;
 use app\api\validate\PagingParameter;
 use app\api\validate\PictureNew;
+use app\lib\exception\GoodsException;
 use app\lib\exception\ParameterException;
 use app\lib\exception\SuccessMessage;
 use think\Exception;
@@ -86,18 +88,41 @@ class Goods extends BaseController
         (new PagingParameter())->goCheck();
         $uid = TokenService::getCurrentUid();
         $pagingGoods = GoodsModel::getAllByUser($uid, $page, $size);
-        return json($pagingGoods);die;
         if ($pagingGoods->isEmpty()) {
-            return json([
-                'data' => [],
-                'current_page' => $pagingGoods->getCurrentPage(),
+            throw new GoodsException([
+                'msg' => '商品已见底线',
+                'errorCode' => 30002
             ]);
         }
-        $data = $pagingGoods->visible(['start_time','end_time','goods_name', 'current_price'])->toArray();
+        $data = $pagingGoods->visible(['start_time','end_time','goods_name', 'current_price', 'main_img'])->toArray();
         return json([
+            'errprCode' => 'ok',
             'data' => $data,
             'current_page' => $pagingGoods->getCurrentPage(),
         ]);
+    }
+
+    public function getAllGoods($page = 1, $size = 10)
+    {
+        $pagingGoods = GoodsModel::getAll($page, $size);
+        if ($pagingGoods->isEmpty()) {
+            throw new GoodsException([
+                'msg' => '商品已见底线',
+                'errorCode' => 30002
+            ]);
+        }
+        $data = $pagingGoods->visible(['start_time','end_time','goods_name', 'current_price', 'main_img'])->toArray();
+        return json([
+            'errprCode' => 'ok',
+            'data' => $data,
+            'current_page' => $pagingGoods->getCurrentPage(),
+        ]);
+    }
+
+    public function getOneDetail($id)
+    {
+        $request = (new IDMustBePostiveInt())->goCheck();
+
     }
 
 }

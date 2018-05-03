@@ -28,11 +28,13 @@ class Goods extends BaseModel
 
     public static function getAllByUser($uid, $page, $size)
     {
-        $pagingData = self::with([
-            'mainImg' => function($query){
-                $query->limit(1);
-            }
-        ])->with('detailImg')->where('user_id', '=', $uid)->paginate($size, true, ['page' => $page]);
+        $pagingData = self::with(['mainImg', 'detailImg'])->where('user_id', '=', $uid)->paginate($size, true, ['page' => $page]);
+        return $pagingData;
+    }
+
+    public static function getAll($page, $size)
+    {
+        $pagingData = self::with(['mainImg', 'detailImg'])->paginate($size, true, ['page' => $page]);
         return $pagingData;
     }
 }

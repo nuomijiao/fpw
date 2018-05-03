@@ -7,5 +7,5 @@
  */
 
 return [
-    'img_prefix' => 'http://www.5d1.top/',
+    'img_prefix' => 'http://www.5d1.top',
 ];
