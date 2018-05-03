@@ -58,7 +58,7 @@ class WeChatCallBack extends BaseController
 //        $postStr = $GLOBALS["HTTP_RAW_POST_DATA"];
         $postStr = file_get_contents("php://input");
         if (!empty($postStr)) {
-//            $this->logger("R \r\n".$postStr);
+            $this->logger("R \r\n".$postStr);
             $postObj = simplexml_load_string($postStr, 'SimpleXMLElement', LIBXML_NOCDATA);
             $RX_TYPE = trim($postObj->MsgType);
             switch ($RX_TYPE) {
@@ -84,7 +84,7 @@ class WeChatCallBack extends BaseController
                     $result = "unknow msg type:". $RX_TYPE;
                     break;
             }
-//            $this->logger("T \r\n".$result);
+            $this->logger("T \r\n".$result);
             return $result;
         } else {
             return '';
@@ -151,7 +151,7 @@ class WeChatCallBack extends BaseController
     private function logger($log_content)
     {
         $max_size = 100000;
-        $log_filename = "log.xml";
+        $log_filename = LOG_PATH. "log.xml";
         if (file_exists($log_filename) && (abs(filesize($log_filename)) > $max_size)) {
             unlink($log_filename);
         }
