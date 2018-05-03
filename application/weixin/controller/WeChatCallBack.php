@@ -25,6 +25,7 @@ class WeChatCallBack extends BaseController
         $request = Request::instance();
         $param = $request->param();
         if (!isset($param['echostr'])) {
+            $this->logger("R \r\n".'cuowu');
             $callback = $this->responseMsg();
             echo $callback;
         } else {
