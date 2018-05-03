@@ -111,12 +111,19 @@ class WeChatCallBack extends BaseController
         } else if (strstr($keyword, "图文") || strstr($keyword, "多图文")) {
             $content = array();
             $content[] = array("Title" => "", "Description" => "", "PicUrl" => "", "Url" => "");
+        } else if (strstr($keyword, "音乐")) {
+            $content = array();
+            $content = array("Title" => "嗨骑之歌（伴奏）", 'Description' => '歌手：高颖', 'MusicUrl' => "http://www.5d1.top/music/haiqizhige.flac", "HQMusicUrl" => 'http://www.5d1.top/music/haiqizhige.flac');
         } else {
             $content = date("Y-m-d H:i:s",time())."\nOpenID:".$object->FromUserName."\n技术支持 糯米蛟";
         }
 
         if (is_array($content)) {
+            if (isset($content[0])) {
 
+            } else if (isset($content['MusicUrl'])) {
+                $result = $this->transmitMusic($object, $content);
+            }
         } else {
             $result = $this->transmitText($object, $content);
         }
@@ -162,6 +169,30 @@ class WeChatCallBack extends BaseController
                    <Content><![CDATA[%s]]></Content>
                    </xml>";
         $result = sprintf($xmlTpl, $object->FromUserName, $object->ToUserName, time(), $content);
+        return $result;
+    }
+
+    //回复音乐消息
+    private function transmitMusic($object, $musicArray)
+    {
+        if (!is_array($musicArray)) {
+            return "";
+        }
+        $itemTpl = "<Music>
+                    <Title><!CDATA[%s]></Title>
+                    <Description><!CDATA[%s]></Description>
+                    <MusicUrl><!CDATA[%s]></MusicUrl>
+                    <HQMusicUrl><!CDATA[%s]></HQMusicUrl>
+                    </Music>";
+        $itemStr = sprintf($itemTpl, $musicArray['Title'], $musicArray['Description'], $musicArray['MusicUrl'], $musicArray['HQMusicUrl']);
+        $xmlTpl = "<xml>
+                   <ToUserName><!CDATA[%s]></ToUserName>
+                   <FromUserName><!CDATA[%s]></FromUserName>
+                   <CreateTime>%s</CreateTime>
+                   <MsgType><!CDATA[music]></MsgType>
+                   $itemStr
+                   </xml>";
+        $result = sprintf($xmlTpl, $object->FromUserName, $object->ToUserName, time());
         return $result;
     }
 
