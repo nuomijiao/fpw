@@ -20,4 +20,10 @@ class Address extends BaseModel
         self::where('user_id', '=', $uid)->update(['is_moren' => 0]);
         self::update(['id' => $id, 'is_moren' => 1]);
     }
+
+    public static function getAll($uid)
+    {
+        $allAddress = self::where('user_id', '=', $uid)->order('is_moren', 'desc')->select();
+        return $allAddress;
+    }
 }

@@ -55,8 +55,14 @@ class Address extends BaseController
     public function getAllAddressByUser()
     {
         $uid = TokenService::getCurrentUid();
-        $allAddress = AddressModel::all(['user_id' => $uid]);
-        return json($allAddress);
+        $allAddress = AddressModel::getAll($uid);
+        if ($allAddress->isEmpty()) {
+            throw new UserException([
+                'msg' => '用户还未添加地址',
+                'errorCode' => 40003
+            ]);
+        }
+        return json(['errorCode'=>'ok', 'allAddress'=>$allAddress]);
     }
 
     private function checkAddressValid($id)

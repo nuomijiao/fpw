@@ -123,7 +123,7 @@ class Goods extends BaseController
     {
         (new IDMustBePostiveInt())->goCheck();
         $goods = GoodsModel::getGoodsDetail($id);
-        if (!$id) {
+        if (!$goods) {
             throw new GoodsException();
         }
         return json($goods);
