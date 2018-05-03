@@ -2,9 +2,10 @@
 namespace app\index\controller;
 
 use app\weixin\controller\OAuth;
+use think\Controller;
 use think\Request;
 
-class Index
+class Index extends Controller
 {
     public function index()
     {
@@ -12,7 +13,7 @@ class Index
             $request = Request::instance();
             $param = $request->param();
             if (!isset($param['code'])) {
-                $redirect_url = "www.5d1.top";
+                $redirect_url = "http://www.5d1.top/index/index/index";
                 $jumpUrl = OAuth::oAuthAuthorize($redirect_url, "snsapi_userinfo", '111');
                 echo $jumpUrl;die;
                 header("Location:$jumpUrl");
