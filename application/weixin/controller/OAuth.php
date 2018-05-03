@@ -11,14 +11,9 @@ namespace app\weixin\controller;
 
 class OAuth extends BaseController
 {
-    private static $appID;
-    private static $appSecret;
+    private static $appID = 'wx9a761d4f23468df9';
+    private static $appSecret = '4cdba3f2fa1bac54cbf416c4c0460e79';
 
-    public function __construct()
-    {
-        self::$appID = config('weixin.appID');
-        self::$appSecret = config('weixin.appSecret');
-    }
 
     //生成OAuth2.0的URL
     public static function oAuthAuthorize($redirectUrl, $scope, $state = NULL)
