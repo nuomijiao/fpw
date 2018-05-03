@@ -13,7 +13,7 @@ class Address extends BaseModel
 {
     protected $autoWriteTimestamp = true;
 
-    protected $hidden = ['update_time', 'create_time'];
+    protected $hidden = ['update_time', 'create_time', 'user_id'];
 
     public static function selectDefaultById($uid, $id)
     {
