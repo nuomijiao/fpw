@@ -38,7 +38,7 @@ class OAuth extends BaseController
     {
         $url = "https://api.weixin.qq.com/sns/userinfo?access_token=".$accessToken."&openid=".$openID."&lang=zh_CN";
         $userInfo = $this->httpRequest($url);
-        return json_decode($userInfo);
+        return $userInfo;
     }
 
 }
