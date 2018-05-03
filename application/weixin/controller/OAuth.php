@@ -11,13 +11,13 @@ namespace app\weixin\controller;
 
 class OAuth extends BaseController
 {
-    private $appID;
-    private $appSecret;
+    private static $appID;
+    private static $appSecret;
 
     public function __construct()
     {
-        $this->appID = config('weixin.appID');
-        $this->appSecret = config('weixin.appSecret');
+        self::$appID = config('weixin.appID');
+        self::$appSecret = config('weixin.appSecret');
     }
 
     //生成OAuth2.0的URL
