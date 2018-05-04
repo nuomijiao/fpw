@@ -12,6 +12,7 @@ namespace app\api\controller\v1;
 use app\api\controller\BaseController;
 use app\api\service\LoginToken;
 use app\api\validate\LoginTokenGet;
+use app\api\validate\WeiXinTokenGet;
 
 class Token extends BaseController
 {
@@ -23,6 +24,17 @@ class Token extends BaseController
         return json([
             'error_code' => 'ok',
             'token'=> $token,
+        ]);
+    }
+
+
+    public function getWeiXinToken($code = '', $state)
+    {
+        $request = (new WeiXinTokenGet())->goCheck();
+        $param = $request->param();
+        return json([
+            'code' => $param['code'],
+            'state' => $param['state'],
         ]);
     }
 
