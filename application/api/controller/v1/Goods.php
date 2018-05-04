@@ -50,7 +50,7 @@ class Goods extends BaseController
                     'origin_name' => $originInfo['name'],
                 ];
                 TmpPicModel::create($dataArray);
-                return json(['errorCode'=>'ok', 'pic'=>$info->getSaveName(), 'type'=>$picType]);
+                return json(['error_code'=>'ok', 'pic'=>$info->getSaveName(), 'type'=>$picType]);
             } else {
                 throw new Exception($info->getError());
             }
