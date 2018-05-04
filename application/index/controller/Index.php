@@ -21,7 +21,7 @@ class Index extends Controller
             } else {
                 $accessToken = $oAuth->oAuthAccessToken($param['code']);
                 $userInfo = $oAuth->oAuthGetUserInfo($accessToken->access_token, $accessToken->openid);
-                return $userInfo;
+//                return $userInfo;
             }
 
         }
