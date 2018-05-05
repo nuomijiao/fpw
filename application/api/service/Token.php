@@ -38,7 +38,7 @@ class Token
             if (!is_array($vars)) {
                 $vars = json_decode($vars, true);
             }
-            if (array_key_exists('uid', $vars)) {
+            if (!array_key_exists('uid', $vars)) {
                 throw new TokenException([
                     'msg' => '微信临时账号，填写手机号码完成注册',
                     'errorCode' => 10004,
