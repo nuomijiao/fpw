@@ -12,10 +12,10 @@ namespace app\api\validate;
 class WeiXinTokenGet extends BaseValidate
 {
     protected $rule = [
-        'code' => 'require|isNotEmpty'
+        'token' => 'require|isNotEmpty'
     ];
 
     protected $message = [
-        'code' => '没有code还想获取Token,做梦哦'
+        'token' => '没有token怎么知道你的注册信息呢！'
     ];
 }

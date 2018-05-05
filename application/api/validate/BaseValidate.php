@@ -28,6 +28,11 @@ class BaseValidate extends Validate
             } else {
                 $params = $param;
             }
+        } else if ('wx_register' == $type) {
+            $token = $request->header('token');
+            $tokenArray = ['token' => $token];
+            $param = $request->param();
+            $params = array_merge($tokenArray, $param);
         } else {
             $params = $request->param();
         }
