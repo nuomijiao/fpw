@@ -14,7 +14,13 @@ class Goods extends BaseModel
 
     protected $autoWriteTimestamp = true;
 
-    protected $hidden = ['update_time', 'create_time', 'recycle', 'check_status'];
+    protected $hidden = ['update_time', 'create_time', 'recycle'];
+
+    public function getCheckStatusAttr($value)
+    {
+        $status = [0 => '未审核', 1=> '审核不通过', 2=> '审核通过'];
+        return $status[$value];
+    }
 
     public function mainImg()
     {
