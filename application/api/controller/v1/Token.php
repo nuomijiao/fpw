@@ -41,13 +41,11 @@ class Token extends BaseController
             header("Location:$jumpUrl");
         } else {
             $accessToken = $oAuth->oAuthAccessToken($param['code']);
-            var_dump($accessToken);die;
-            $acc = json($accessToken, true);
-            if (array_key_exists('errcode', $acc)) {
+            if (array_key_exists('errcode', $accessToken)) {
                 $url = "http://www.5d1.top/api/v1/token/weixin";
                 header("Location:$url");
             }
-            $userInfo = $oAuth->oAuthGetUserInfo($accessToken->access_token, $accessToken->openid);
+            $userInfo = $oAuth->oAuthGetUserInfo($accessToken['access_token'], $accessToken['openid']);
             $wxt = new WeiXinToken();
             $token = $wxt->get($userInfo);
             return json([

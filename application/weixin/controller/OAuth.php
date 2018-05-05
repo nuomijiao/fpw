@@ -31,7 +31,7 @@ class OAuth extends BaseController
     {
         $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=".$this->appID."&secret=".$this->appSecret."&code=".$code."&grant_type=authorization_code";
         $accessToken = $this->httpRequest($url);
-        return json_decode($accessToken);
+        return json_decode($accessToken, true);
     }
 
     public function oAuthGetUserInfo($accessToken, $openID)
