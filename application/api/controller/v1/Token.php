@@ -41,6 +41,7 @@ class Token extends BaseController
             header("Location:$jumpUrl");
         } else {
             $accessToken = $oAuth->oAuthAccessToken($param['code']);
+            var_dump($accessToken);die;
             $acc = json($accessToken, true);
             if (array_key_exists('errcode', $acc)) {
                 $url = "http://www.5d1.top/api/v1/token/weixin";
