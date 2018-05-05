@@ -11,8 +11,10 @@ namespace app\api\controller\v1;
 
 use app\api\controller\BaseController;
 use app\api\service\LoginToken;
+use app\api\service\WeiXinToken;
 use app\api\validate\LoginTokenGet;
-use app\api\validate\WeiXinTokenGet;
+use app\weixin\controller\OAuth;
+use think\Request;
 
 class Token extends BaseController
 {
@@ -28,18 +30,25 @@ class Token extends BaseController
     }
 
 
-    public function getWeiXinToken($code = '', $state)
+    public function getWeiXinToken()
     {
-        $request = (new WeiXinTokenGet())->goCheck();
+        $oAuth = new OAuth();
+        $request = Request::instance();
         $param = $request->param();
-        return json([
-            'code' => $param['code'],
-            'state' => $param['state'],
-        ]);
+        if (!isset($param['code'])) {
+            $redirect_url = "http://www.5d1.top/api/v1.Token/getWeiXinToken";
+            $jumpUrl = $oAuth->oAuthAuthorize($redirect_url, "snsapi_userinfo", '111');
+            header("Location:$jumpUrl");
+        } else {
+            $accessToken = $oAuth->oAuthAccessToken($param['code']);
+            $userInfo = $oAuth->oAuthGetUserInfo($accessToken->access_token, $accessToken->openid);
+            $wxt = new WeiXinToken();
+            $token = $wxt->get($userInfo);
+            return json([
+                'error_code' => 'ok',
+                'token' => $token,
+            ]);
+        }
     }
 
-    public function verifyToken()
-    {
-
-    }
 }
