@@ -43,12 +43,12 @@ class Token extends BaseController
             $accessToken = $oAuth->oAuthAccessToken($param['code']);
             $userInfo = $oAuth->oAuthGetUserInfo($accessToken->access_token, $accessToken->openid);
             return $userInfo;
-//            $wxt = new WeiXinToken();
-//            $token = $wxt->get($userInfo);
-//            return json([
-//                'error_code' => 'ok',
-//                'token' => $token,
-//            ]);
+            $wxt = new WeiXinToken();
+            $token = $wxt->get($userInfo);
+            return json([
+                'error_code' => 'ok',
+                'token' => $token,
+            ]);
         }
     }
 

@@ -13,7 +13,6 @@ use think\Route;
 
 //微信接口路由
 Route::rule('weixin/callback', 'weixin/WeChatCallBack/index', 'GET|POST');
-Route::rule('api/:version/token/weixin', 'api/:version.Token/getWeiXinToken', 'GET|POST');
 
 //发送验证码
 Route::post('api/:version/sendsms/register', 'api/:version.Sms/registerSms');
@@ -21,6 +20,8 @@ Route::post('api/:version/sendsms/register', 'api/:version.Sms/registerSms');
 Route::post('api/:version/register', 'api/:version.Register/register');
 //登陆获取token
 Route::post('api/:version/token/login', 'api/:version.Token/getLoginToken');
+//微信获取token
+Route::get('api/:version/token/weixin', 'api/:version.Token/getWeiXinToken');
 
 //上传商品图片
 Route::post('api/:version/goods/upload_img', 'api/:version.Goods/uploadImg');
