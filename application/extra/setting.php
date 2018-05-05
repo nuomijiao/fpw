@@ -7,5 +7,6 @@
  */
 
 return [
-    'img_prefix' => 'http://www.5d1.top',
+    'version' => 'v1',
+    'domain' => 'http://www.5d1.top',
 ];

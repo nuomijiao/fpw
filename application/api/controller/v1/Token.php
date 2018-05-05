@@ -36,13 +36,13 @@ class Token extends BaseController
         $request = Request::instance();
         $param = $request->param();
         if (!isset($param['code'])) {
-            $redirect_url = "http://www.5d1.top/api/v1.Token/getWeiXinToken";
+            $redirect_url = config('setting.domain')."/api/".config('setting.version')."/token/weixin";
             $jumpUrl = $oAuth->oAuthAuthorize($redirect_url, "snsapi_userinfo", '111');
             header("Location:$jumpUrl");
         } else {
             $accessToken = $oAuth->oAuthAccessToken($param['code']);
             if (array_key_exists('errcode', $accessToken)) {
-                $url = "http://www.5d1.top/api/v1/token/weixin";
+                $url = config('setting.domain')."/api/".config('setting.version')."/token/weixin";
                 header("Location:$url");
             } else {
                 $userInfo = $oAuth->oAuthGetUserInfo($accessToken['access_token'], $accessToken['openid']);
