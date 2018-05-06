@@ -18,6 +18,8 @@ Route::rule('weixin/callback', 'weixin/WeChatCallBack/index', 'GET|POST');
 Route::post('api/:version/sendsms/register', 'api/:version.Sms/registerSms');
 //注册用户并获取token
 Route::post('api/:version/register', 'api/:version.Register/register');
+//微信授权绑定手机号
+Route::post('api/:version/wxregister', 'api/:version.Register/wxRegister');
 //登陆获取token
 Route::post('api/:version/token/login', 'api/:version.Token/getLoginToken');
 //微信获取token
