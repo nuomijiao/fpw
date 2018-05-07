@@ -37,7 +37,7 @@ class Token extends BaseController
         $param = $request->param();
         if (!isset($param['code'])) {
             $redirect_url = config('setting.domain')."/api/".config('setting.version')."/token/weixin";
-            $jumpUrl = $oAuth->oAuthAuthorize($redirect_url, " ", '111');
+            $jumpUrl = $oAuth->oAuthAuthorize($redirect_url, "snsapi_userinfo", 'fpw');
             header("Location:$jumpUrl");
         } else {
             $accessToken = $oAuth->oAuthAccessToken($param['code']);
@@ -48,10 +48,8 @@ class Token extends BaseController
                 $userInfo = $oAuth->oAuthGetUserInfo($accessToken['access_token'], $accessToken['openid']);
                 $wxt = new WeiXinToken();
                 $token = $wxt->get($userInfo);
-                return json([
-                    'error_code' => 'ok',
-                    'token' => $token,
-                ]);
+                $vueUrl = config('setting.domain')."/#/author/".$token;
+                header("Location:$vueUrl");
             }
         }
     }
