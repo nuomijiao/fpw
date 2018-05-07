@@ -48,7 +48,7 @@ class Goods extends BaseModel
     {
         $goods = self::with([
             'mainImg' => function($query){
-                $query->field(['img_url' => 'image']);
+                $query->field(['img_url'=>'image', 'goods_id', 'id', 'img_from', 'order', 'create_time', 'update_time']);
             }
         ])->with(['detailImg'])->find($id);
         return $goods;

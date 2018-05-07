@@ -19,4 +19,9 @@ class GoodsMainImages extends BaseModel
     {
         return $this->prefixImgUrl($value, $data);
     }
+
+    public function getImageAttr($value, $data)
+    {
+        return $this->prefixImgUrl($value, $data);
+    }
 }
