@@ -19,8 +19,10 @@ use app\api\validate\PictureNew;
 use app\lib\exception\GoodsException;
 use app\lib\exception\ParameterException;
 use app\lib\exception\SuccessMessage;
+use think\Cache;
 use think\Exception;
 use app\api\model\Goods as GoodsModel;
+use app\api\model\GoodsHits as GoodsHitsModel;
 
 class Goods extends BaseController
 {
@@ -121,8 +123,29 @@ class Goods extends BaseController
 
     public function getOneDetail($id = '')
     {
-        (new IDMustBePostiveInt())->goCheck();
-        $goods = GoodsModel::getGoodsDetail($id);
+        $request = (new IDMustBePostiveInt())->goCheck();
+        $ip = $request->ip();
+        $token = $request->header('token');
+
+        //增加浏览次数
+        $hits = GoodsHitsModel::checkIp($id, $ip);
+        if (!$hits) {
+            GoodsHitsModel::create(['goods_id' => $id, 'ip' => $ip]);
+        }
+
+        if (!empty(trim($token))) {
+            $vars = Cache::get($token);
+            if (!is_array($vars)) {
+                $vars = json_decode($vars, true);
+            }
+            if ($vars['uid']) {
+                $uid = $vars['uid'];
+                $goods = GoodsModel::getGoodsDetail($id, $uid);
+            }
+        } else {
+            $goods = GoodsModel::getGoodsDetail($id);
+        }
+
         if (!$goods) {
             throw new GoodsException();
         }

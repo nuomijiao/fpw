@@ -8,6 +8,8 @@
 
 namespace app\api\model;
 
+use app\api\model\GoodsHits as GoodsHitsModel;
+use app\api\model\AuctionEnroll as AuctionEnrollModel;
 
 class Goods extends BaseModel
 {
@@ -32,6 +34,16 @@ class Goods extends BaseModel
         return $this->hasMany('GoodsDetailImages', 'goods_id', 'id');
     }
 
+    public function goodsHits()
+    {
+        return $this->hasMany('GoodsHits', 'goods_id', 'id');
+    }
+
+    public function auctionEnroll()
+    {
+        return $this->hasMany('AuctionEnroll', 'goods_id', 'id');
+    }
+
     public static function getAllByUser($uid, $page, $size)
     {
         $pagingData = self::with(['mainImg', 'detailImg'])->where('user_id', '=', $uid)->paginate($size, true, ['page' => $page]);
@@ -44,13 +56,22 @@ class Goods extends BaseModel
         return $pagingData;
     }
 
-    public static function getGoodsDetail($id)
+    public static function getGoodsDetail($goodsID, $uid = '')
     {
         $goods = self::with([
             'mainImg' => function($query){
                 $query->field(['img_url'=>'image', 'goods_id', 'id', 'img_from', 'order', 'create_time', 'update_time']);
             }
-        ])->with(['detailImg'])->find($id);
-        return $goods;
+        ])->with(['detailImg'])->find($goodsID);
+        $goodsDetail = $goods;
+        $goodsCount = GoodsHitsModel::getClickCount($goodsID);
+        $goodsDetail['click_count'] = $goodsCount;
+        if (!empty(trim($uid))) {
+            $isEnroll = AuctionEnrollModel::isEnroll($uid, $goodsID);
+            $goodsDetail['is_enroll'] = $isEnroll;
+        } else {
+            $goodsDetail['is_enroll'] = 0;
+        }
+        return $goodsDetail;
     }
 }
