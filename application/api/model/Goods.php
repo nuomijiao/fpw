@@ -46,7 +46,11 @@ class Goods extends BaseModel
 
     public static function getGoodsDetail($id)
     {
-        $goods = self::with(['mainImg', 'detailImg'])->find($id);
+        $goods = self::with([
+            'mainImg' => function($query){
+                $query->field(['img_url' => 'image']);
+            }
+        ])->with(['detailImg'])->find($id);
         return $goods;
     }
 }

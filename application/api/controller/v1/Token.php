@@ -37,7 +37,7 @@ class Token extends BaseController
         $param = $request->param();
         if (!isset($param['code'])) {
             $redirect_url = config('setting.domain')."/api/".config('setting.version')."/token/weixin";
-            $jumpUrl = $oAuth->oAuthAuthorize($redirect_url, "snsapi_userinfo", '111');
+            $jumpUrl = $oAuth->oAuthAuthorize($redirect_url, " ", '111');
             header("Location:$jumpUrl");
         } else {
             $accessToken = $oAuth->oAuthAccessToken($param['code']);
