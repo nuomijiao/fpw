@@ -63,7 +63,7 @@ class Goods extends BaseController
         }
     }
 
-    public function deleteTmpPic($name)
+    public function deleteTmpPic($name = '')
     {
         if (empty(trim($name))) {
             throw new ParameterException();
@@ -141,6 +141,8 @@ class Goods extends BaseController
             if ($vars['uid']) {
                 $uid = $vars['uid'];
                 $goods = GoodsModel::getGoodsDetail($id, $uid);
+            } else {
+                $goods = GoodsModel::getGoodsDetail($id);
             }
         } else {
             $goods = GoodsModel::getGoodsDetail($id);

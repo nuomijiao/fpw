@@ -74,4 +74,11 @@ class Goods extends BaseModel
         }
         return $goodsDetail;
     }
+
+    public static function getGoodsInfo($id, $array = [])
+    {
+        $goods = self::field($array)->find($id);
+        return $goods;
+    }
+
 }

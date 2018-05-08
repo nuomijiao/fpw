@@ -48,6 +48,10 @@ Route::get('api/:version/address/default/:id', 'api/:version.Address/setDefault'
 Route::get('api/:version/address/all', 'api/:version.Address/getAllAddressByUser');
 
 
+//竞价
+Route::get('api/:version/bid/:id', 'api/:version.Bid/bid');
+
+
 
 
 
