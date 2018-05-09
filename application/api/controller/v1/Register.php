@@ -18,6 +18,8 @@ use app\lib\exception\LogAndRegException;
 use app\api\model\SmsCode as SmsCodeModel;
 use app\api\service\LoginToken;
 use app\lib\exception\SuccessMessage;
+use app\lib\exception\TokenException;
+use think\Cache;
 
 class Register extends BaseController
 {
@@ -48,6 +50,7 @@ class Register extends BaseController
             //新增用户数据库
             $dataArray = [
                 'mobile' => $mobile, 'password' => md5($pwd), 'last_login' => $timenow,
+                'username' => "fpw_".self::getRandChar(6), 'uploadimgurl' => '/images/moren.jpg',
             ];
             $user = UserModel::create($dataArray);
             if ($user->id) {
@@ -65,6 +68,10 @@ class Register extends BaseController
     {
         (new WeiXinTokenGet())->goCheck('wx_register');
         (new RegisterNew())->goCheck();
+        $vars = Cache::get($token);
+        if (!$vars) {
+            throw new TokenException();
+        }
         //检查验证码是否正确
         $codeInfo = SmsCodeModel::checkCode($mobile, $code, SmsCodeTypeEnum::ToRegister);
         if (!$codeInfo || $codeInfo['code'] != $code || $codeInfo['expire_time'] < time() || 1 == $codeInfo['is_use']) {
@@ -73,7 +80,6 @@ class Register extends BaseController
                 'errorCode' => 20002,
             ]);
         }
-        $vars = Cache::get($token);
         $cachedValue = $vars;
         //检查手机号状态
         $user = UserModel::checkMobile($mobile);
@@ -112,5 +118,20 @@ class Register extends BaseController
                 throw new SuccessMessage();
             }
         }
+    }
+
+    private static function getRandChar($length)
+    {
+        $str = null;
+        $strPol = "0123456789";
+        $max = strlen($strPol) - 1;
+
+        for ($i = 0;
+             $i < $length;
+             $i++) {
+            $str .= $strPol[rand(0, $max)];
+        }
+
+        return $str;
     }
 }

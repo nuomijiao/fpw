@@ -14,6 +14,11 @@ class User extends BaseModel
 
     protected $autoWriteTimestamp = true;
 
+    public function getUploadimgurlAttr($value, $data)
+    {
+        return config('setting.domain').$value;
+    }
+
     public function address()
     {
         return $this->hasMany('Address', 'user_id', 'id');

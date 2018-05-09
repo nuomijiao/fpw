@@ -44,6 +44,11 @@ class Goods extends BaseModel
         return $this->hasMany('AuctionEnroll', 'goods_id', 'id');
     }
 
+    public function incrementsRecord()
+    {
+        return $this->hasMany('IncrementsRecord', 'goods_id', 'id');
+    }
+
     public static function getAllByUser($uid, $page, $size)
     {
         $pagingData = self::with(['mainImg', 'detailImg'])->where('user_id', '=', $uid)->paginate($size, true, ['page' => $page]);
@@ -62,8 +67,17 @@ class Goods extends BaseModel
             'mainImg' => function($query){
                 $query->field(['img_url'=>'image', 'goods_id', 'id', 'img_from', 'order', 'create_time', 'update_time']);
             }
+        ])->with([
+            'incrementsRecord' => function($que){
+                $que->with([
+                    'user' => function($qu){
+                        $qu->field(['id', 'nickname', 'username']);
+                    }
+                ])->order('quoted_price', 'desc');
+            }
         ])->with(['detailImg'])->find($goodsID);
-        $goodsDetail = $goods;
+
+        $goodsDetail = $goods->hidden([]);
         $goodsCount = GoodsHitsModel::getClickCount($goodsID);
         $goodsDetail['click_count'] = $goodsCount;
         if (!empty(trim($uid))) {
