@@ -48,7 +48,8 @@ class Token extends BaseController
                 $userInfo = $oAuth->oAuthGetUserInfo($accessToken['access_token'], $accessToken['openid']);
                 $wxt = new WeiXinToken();
                 $token = $wxt->get($userInfo);
-                return $token;
+                $vueUrl = "http://www.baidu.com";
+                header("Location:$vueUrl");
             }
         }
     }
