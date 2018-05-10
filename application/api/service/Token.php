@@ -45,7 +45,7 @@ class Token
                 ]);
             }
             if (array_key_exists($key, $vars)) {
-                cache($token, $vars, config('secure.token_expire_in'));
+                cache($token, json_encode($vars), config('secure.token_expire_in'));
                 return $vars[$key];
             } else {
                 throw new Exception('尝试获取的Token变量并不存在');
