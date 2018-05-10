@@ -33,7 +33,7 @@ class User extends BaseController
                 $userInfo = UserModel::get($vars['uid']);
                 return json([
                     'error_code' => 'ok',
-                    'user_info' => $userInfo,
+
                 ]);
             }
         }
