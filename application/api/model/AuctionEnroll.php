@@ -26,7 +26,7 @@ class AuctionEnroll extends BaseModel
         }
     }
 
-    public static function isPayEnroll($uid, $goodsID)
+    public static function isPay($uid, $goodsID)
     {
         $isPay = self::where(['user_id' => $uid, 'goods_id' => $goodsID])->find();
         return $isPay;

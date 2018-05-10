@@ -18,6 +18,7 @@ use app\api\model\Address as AddressModel;
 use app\lib\exception\TokenException;
 use app\lib\exception\UserException;
 use app\api\service\Token as TokenService;
+use app\api\model\IncrementsRecord as IncrementsRecordModel;
 
 class Enroll
 {
@@ -31,12 +32,12 @@ class Enroll
         $this->uid = $uid;
         $this->goods_id = $goods_id;
         //检查商品时间是否已过
-        $goods = $this->checkGoods();
+        $goods = $this->checkGoods('enroll');
 
         //检查是否交过保证金
         $status = $this->checkIsEnroll();
 
-        if ($status) {
+        if ($status['pass']) {
             //开始创建报名订单
             $enrollSnap = $this->snapEnroll($goods);
             $enroll = $this->createEnroll($enrollSnap);
@@ -47,6 +48,34 @@ class Enroll
             ];
         }
         return $enroll;
+    }
+
+    public function placeFinal($uid, $goodsID)
+    {
+        $this->uid = $uid;
+        $this->goods_id = $goodsID;
+        //检查商品是否已过拍卖时间
+        $this->checkGoods('final');
+        //检查是否符合交尾款
+        $isPayFinal = IncrementsRecordModel::checkBidValid($uid, $goodsID);
+        if (!$isPayFinal) {
+            throw new BidException([
+                'msg' => '你没有拍到该商品，不用交尾款',
+                'errorCode' => 50007,
+            ]);
+        }
+        //检查是否已经交过尾款
+        $status = $this->checkIsFinal();
+        if ($status['pass']) {
+            //开始创建尾款订单（更新报名订单）
+            $final = $this->createFinal($isPayFinal);
+        } else {
+            $final = [
+                'enroll_id' => $status['enroll_id'],
+                'final_order_no' => $status['final_order_no'],
+            ];
+        }
+        return $final;
     }
 
     private function snapEnroll($goods)
@@ -68,7 +97,7 @@ class Enroll
 
     private function createEnroll($snap)
     {
-        $auctionEnrollNo = $this->makeOrderNo();
+        $enrollOrderNo = $this->makeOrderNo();
         $enroll = new AuctionEnrollModel();
         $enroll->user_id = $this->uid;
         $enroll->goods_id = $this->goods_id;
@@ -78,28 +107,49 @@ class Enroll
         $enroll->snap_address_mobile = $snap['snap_address_mobile'];
         $enroll->snap_items = $snap['snap_items'];
         $enroll->pay_status = PayStatus::UNPAYALL;
-        $enroll->enroll_order_no = $auctionEnrollNo;
+        $enroll->enroll_order_no = $enrollOrderNo;
         $enroll->save();
         $enrollID = $enroll->id;
         return [
             'enroll_id' => $enrollID,
-            'enroll_order_no' => $auctionEnrollNo,
+            'enroll_order_no' => $enrollOrderNo,
         ];
     }
 
-    private function checkGoods()
+    private function createFinal($finalPrice)
+    {
+        $finalOrderNo = $this->makeOrderNo();
+        $final = AuctionEnrollModel::where(['user_id'=>$this->uid, 'goods_id'=>$this->goods_id])->update(['final_price'=>$finalPrice, 'final_order_no'=>$finalOrderNo, 'pay_status'=>PayStatus::PAYONLYDEPOSIT]);
+        return [
+            'enroll_id' => $final->id,
+            'final_order_no' => $final->final_order_no,
+        ];
+    }
+
+    private function checkGoods($type)
     {
         $goods = GoodsModel::get($this->goods_id);
         if (!$goods) {
             throw new GoodsException();
         }
-        //检查商品是否已过时间
-        if (time() > $goods->end_time) {
-            throw new BidException([
-                'msg' => '商品拍卖时间已过',
-                'errorCode' => 50002,
-            ]);
+        if ('enroll' == $type) {
+            //检查商品是否已过时间
+            if (time() > $goods->end_time) {
+                throw new BidException([
+                    'msg' => '商品拍卖时间已过',
+                    'errorCode' => 50002,
+                ]);
+            }
+        } else if ('final' == $type) {
+            //检查商品是否已过时间
+            if (time() < $goods->end_time) {
+                throw new BidException([
+                    'msg' => '商品拍卖时间还未过',
+                    'errorCode' => 50008,
+                ]);
+            }
         }
+
         return $goods->hidden(['id', 'user_id', 'check_status']);
     }
 
@@ -110,7 +160,7 @@ class Enroll
             'enroll_id' => '',
             'enroll_order_no' => '',
         ];
-        $enroll = AuctionEnrollModel::isPayEnroll($this->uid, $this->goods_id);
+        $enroll = AuctionEnrollModel::isPay($this->uid, $this->goods_id);
         if (!$enroll) {
             $status['pass'] = true;
         } else if ($enroll->pay_status == PayStatus::PAYDEPOSIT) {
@@ -126,6 +176,34 @@ class Enroll
             throw new BidException([
                 'msg' => '商品拍卖时间已过',
                 'errorCode' => 50002,
+            ]);
+        }
+        return $status;
+    }
+
+    private function checkIsFinal()
+    {
+        $status = [
+            'pass' => true,
+            'enroll_id' => '',
+            'final_order_no' => '',
+        ];
+        $final = AuctionEnrollModel::isPay($this->uid, $this->goods_id);
+        if (!$final['final_price']) {
+            $status['pass'] = true;
+        } else if ($final->pay_status == PayStatus::PAYONLYDEPOSIT) {
+            $status['pass'] = false;
+            $status['enroll_id'] = $final->id;
+            $status['final_order_no'] = $final->final_order_no;
+        } else if ($final->pay_status == PayStatus::PAYALL) {
+            throw new BidException([
+                'msg' => '已经交过尾款',
+                'errorCode' => 50009,
+            ]);
+        } else if ($final->pay_status < PayStatus::PAYONLYDEPOSIT) {
+            throw new BidException([
+                'msg' => '你还没有拍到该商品，不用交尾款',
+                'errorCode' => 50007,
             ]);
         }
         return $status;

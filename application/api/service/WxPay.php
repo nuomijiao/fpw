@@ -44,11 +44,15 @@ class WxPay
         $this->orderID = $orderID;
         $this->type = $type;
     }
-    public function payEnroll()
+    public function pay()
     {
         //检查订单和用户是否匹配
-        $enroll = $this->checkOrderValid('enroll');
-        return $this->makeWxPreOrder($enroll->enroll_price);
+        $enrollOrFinal = $this->checkOrderValid();
+        if ('enroll' == $this->type) {
+            return $this->makeWxPreOrder($enrollOrFinal->enroll_price);
+        } else if ('final' == $this->type) {
+            return $this->makeWxPreOrder($enrollOrFinal->final_price);
+        }
     }
 
     public function makeWxPreOrder($totalPrice)
@@ -62,10 +66,10 @@ class WxPay
         $wxOrderData = new \WxPayUnifiedOrder();
         if ('enroll' == $this->type) {
             $wxOrderData->SetOut_trade_no($this->enrollOrderNO);
-            $wxOrderData->SetNotify_url(config('secure.pay_back_url'));
+            $wxOrderData->SetNotify_url(config('secure.wx_enroll_pay_back_url'));
         } else if ('final' == $this->type) {
             $wxOrderData->SetOut_trade_no($this->finalOrderNo);
-            $wxOrderData->SetNotify_url(config('secure.pay_back_url'));
+            $wxOrderData->SetNotify_url(config('secure.wx_final_pay_back_url'));
         }
         $wxOrderData->SetTrade_type('JSAPI');
         $wxOrderData->SetTotal_fee($totalPrice * 100);
@@ -105,9 +109,6 @@ class WxPay
         $sign = $jsApiPayData->MakeSign();
         $rawValues = $jsApiPayData->GetValues();
         $rawValues['paySign'] = $sign;
-
-        unset($rawValues['appId']);
-
         return $rawValues;
     }
 
@@ -122,31 +123,31 @@ class WxPay
         AuctionEnrollModel::where('id', '=', $this->orderID)->update(['final_prepay_id'=>$wxOrder['prepay_id']]);
 
     }
-    private function checkOrderValid($type)
+    private function checkOrderValid()
     {
-        $enroll = AuctionEnrollModel::where('id', '=', $this->orderID)->find();
-        if (!$enroll) {
+        $enrollOrFinal = AuctionEnrollModel::where('id', '=', $this->orderID)->find();
+        if (!$enrollOrFinal) {
             throw new BidException([
                 'msg' => '该订单不存在',
                 'errorCode' => 50005
             ]);
         }
-        if (!TokenService::isValidOperate($enroll->id)) {
+        if (!TokenService::isValidOperate($enrollOrFinal->id)) {
             throw new TokenException([
                 'msg' => '订单与用户不匹配',
                 'errorCode' => 10003,
             ]);
         }
 
-        if ('enroll' == $type) {
-            if ($enroll->pay_status >= PayStatus::PAYDEPOSIT) {
+        if ('enroll' == $this->type) {
+            if ($enrollOrFinal->pay_status >= PayStatus::PAYDEPOSIT) {
                 throw new BidException([
                     'msg' => '订单保证金已支付过啦',
                     'errorCode' => 50004,
                 ]);
             }
-        } else if ('final' == $type) {
-            if ($enroll->pay_status >= PayStatus::PAYALL) {
+        } else if ('final' == $this->type) {
+            if ($enrollOrFinal->pay_status >= PayStatus::PAYALL) {
                 throw new BidException([
                     'msg' => '订单尾款已支付过啦',
                     'errorCode' => 50004,
@@ -154,8 +155,8 @@ class WxPay
             }
         }
 
-        $this->enrollOrderNO = $enroll->enroll_order_no;
-        $this->finalOrderNo = $enroll->final_order_no;
-        return $enroll;
+        $this->enrollOrderNO = $enrollOrFinal->enroll_order_no;
+        $this->finalOrderNo = $enrollOrFinal->final_order_no;
+        return $enrollOrFinal;
     }
 }

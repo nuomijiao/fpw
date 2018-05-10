@@ -51,6 +51,17 @@ Route::get('api/:version/address/all', 'api/:version.Address/getAllAddressByUser
 //竞价
 Route::get('api/:version/bid/:id', 'api/:version.Bid/bid');
 //报名
+Route::post('api/:version/enroll', 'api/:version.AuctionEnroll/enroll');
+
+//支付保证金
+Route::post('api/:version/wx_enroll_pay', 'api/:version.WxPay/getEnrollPreOrder');
+//支付尾款
+Route::post('api/:version/wx_final_pay', 'api/:version.WxPay/getFinalPreOrder');
+
+//保证金微信支付回调
+Route::post('api/:version/wxpay/enroll_notify', 'api/:version.WxPay/receiveEnrollNotify');
+//尾款微信支付回调
+Route::post('api/:version/wxpay/final_notify', 'api/:version.WxPay/receiveFinalNotify');
 
 //用户信息
 Route::get('api/:version/user', 'api/:version.User/getUserInfo');

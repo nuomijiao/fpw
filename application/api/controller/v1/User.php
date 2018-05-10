@@ -31,7 +31,10 @@ class User extends BaseController
                 return json($vars);
             } else {
                 $userInfo = UserModel::get($vars['uid']);
-                return json($userInfo);
+                return json([
+                    'error_code' => 'ok',
+                    'user_info' => $userInfo,
+                ]);
             }
         }
     }

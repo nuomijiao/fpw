@@ -48,7 +48,7 @@ class Bid extends BaseController
 
         //检查自己是不是最高价
         $bidValid = IncrementsRecordModel::checkBidValid($uid, $id);
-        if (!$bidValid) {
+        if ($bidValid) {
             throw new BidException();
         }
 

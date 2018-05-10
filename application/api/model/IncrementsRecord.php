@@ -27,9 +27,9 @@ class IncrementsRecord extends BaseModel
             $query->name('increments_record')->where(['user_id' => $uid, 'goods_id' => $goodsID])->field('quoted_price')->order('quoted_price', 'desc')->limit(1);
         })->find();
         if ($bid->user_id == $uid) {
-            return false;
+            return $bid->quoted_price;
         } else {
-            return true;
+            return false;
         }
     }
 }

@@ -10,6 +10,7 @@ namespace app\api\model;
 
 use app\api\model\GoodsHits as GoodsHitsModel;
 use app\api\model\AuctionEnroll as AuctionEnrollModel;
+use app\api\model\IncrementsRecord as IncrementsRecordModel;
 
 class Goods extends BaseModel
 {
@@ -76,13 +77,22 @@ class Goods extends BaseModel
                 ])->order('quoted_price', 'desc');
             }
         ])->with(['detailImg'])->find($goodsID);
-
-        $goodsDetail = $goods->hidden([]);
+        $goodsDetail = $goods;
         $goodsCount = GoodsHitsModel::getClickCount($goodsID);
         $goodsDetail['click_count'] = $goodsCount;
         if (!empty(trim($uid))) {
             $isEnroll = AuctionEnrollModel::isEnroll($uid, $goodsID);
             $goodsDetail['is_enroll'] = $isEnroll;
+            if (time() > $goodsDetail['end_time']) {
+                $isPayFinal = IncrementsRecordModel::checkBidValid($uid, $goodsID);
+                if (!$isPayFinal) {
+                    $goodsDetail['is_pay_final'] = 1;
+                } else {
+                    $goodsDetail['is_pay_final'] = 0;
+                }
+            } else {
+                $goodsDetail['is_pay_final'] = 0;
+            }
         } else {
             $goodsDetail['is_enroll'] = 0;
         }

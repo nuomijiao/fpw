@@ -9,4 +9,6 @@
 return [
     'token_salt' => 'fangpaiwang',
     'token_expire_in' => 7200,
+    'wx_enroll_pay_back_url' => 'http://www.5d1.top/api/v1/',
+    'wx_final_pay_back_url' => ''
 ];
