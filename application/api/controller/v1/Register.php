@@ -64,10 +64,11 @@ class Register extends BaseController
         }
     }
 
-    public function wxRegister($mobile = '', $pwd = '', $code = '', $token = '')
+    public function wxRegister($mobile = '', $pwd = '', $code = '')
     {
-        (new WeiXinTokenGet())->goCheck('wx_register');
+        $request = (new WeiXinTokenGet())->goCheck('wx_register');
         (new RegisterNew())->goCheck();
+        $token = $request->header('token');
         $vars = Cache::get($token);
         if (!$vars) {
             throw new TokenException();
@@ -96,7 +97,7 @@ class Register extends BaseController
                 SmsCodeModel::changeStatus($mobile, $code, SmsCodeTypeEnum::ToRegister, $timenow);
                 $dataArray = [
                     'nickname' => $vars['nickname'], 'sex' => $vars['sex'], 'province' => $vars['province'], 'city' => $vars['city'],
-                    'country' => $vars['country'], 'headimgurl' => $vars['headimgurl'], 'openid' => $vars['openid'],
+                    'country' => $vars['country'], 'headimgurl' => $vars['headimgurl'], 'openid' => $vars['openid'], 'password' => md5($pwd),
                 ];
                 $user->save($dataArray);
                 cache($token, $cachedValue, config('secure.token_expire_in'));
