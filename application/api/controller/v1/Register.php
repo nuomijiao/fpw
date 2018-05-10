@@ -73,6 +73,9 @@ class Register extends BaseController
         if (!$vars) {
             throw new TokenException();
         }
+        if (!is_array($vars)) {
+            $vars = json_decode($vars, true);
+        }
         //检查验证码是否正确
         $codeInfo = SmsCodeModel::checkCode($mobile, $code, SmsCodeTypeEnum::ToRegister);
         if (!$codeInfo || $codeInfo['code'] != $code || $codeInfo['expire_time'] < time() || 1 == $codeInfo['is_use']) {
@@ -100,7 +103,7 @@ class Register extends BaseController
                     'country' => $vars['country'], 'headimgurl' => $vars['headimgurl'], 'openid' => $vars['openid'], 'password' => md5($pwd),
                 ];
                 $user->save($dataArray);
-                cache($token, $cachedValue, config('secure.token_expire_in'));
+                cache($token, json_encode($cachedValue), config('secure.token_expire_in'));
                 throw new SuccessMessage();
             }
         } else {
@@ -115,7 +118,7 @@ class Register extends BaseController
             $user = UserModel::create($dataArray);
             if ($user->id) {
                 $cachedValue['uid'] = $user->id;
-                cache($token, $cachedValue, config('secure.token_expire_in'));
+                cache($token, json_encode($cachedValue), config('secure.token_expire_in'));
                 throw new SuccessMessage();
             }
         }
