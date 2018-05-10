@@ -28,12 +28,15 @@ class User extends BaseController
                 $vars = json_decode($vars, true);
             }
             if (!array_key_exists('uid', $vars)) {
-                return json($vars);
+                return json([
+                    'error_code' => 'ok',
+                    'user_info' => $vars,
+                ]);
             } else {
                 $userInfo = UserModel::get($vars['uid']);
                 return json([
                     'error_code' => 'ok',
-
+                    'user_info' => $userInfo,
                 ]);
             }
         }
