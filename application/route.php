@@ -58,10 +58,9 @@ Route::post('api/:version/wx_enroll_pay', 'api/:version.WxPay/getEnrollPreOrder'
 //支付尾款
 Route::post('api/:version/wx_final_pay', 'api/:version.WxPay/getFinalPreOrder');
 
-//保证金微信支付回调
-Route::post('api/:version/wxpay/enroll_notify', 'api/:version.WxPay/receiveEnrollNotify');
-//尾款微信支付回调
-Route::post('api/:version/wxpay/final_notify', 'api/:version.WxPay/receiveFinalNotify');
+//微信支付回调
+Route::post('api/:version/wxpay/notify', 'api/:version.WxPay/receiveNotify');
+
 
 //用户信息
 Route::get('api/:version/user', 'api/:version.User/getUserInfo');

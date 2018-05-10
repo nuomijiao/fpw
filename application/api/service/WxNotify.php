@@ -9,42 +9,56 @@
 namespace app\api\service;
 
 
+use app\api\model\AuctionEnroll as AuctionEnrollModel;
+use app\lib\enum\PayStatus;
+use think\Db;
+use think\Exception;
 use think\Loader;
+use think\Log;
 
 Loader::import('WxPay.WxPay', EXTEND_PATH, '.Api.php');
 
 class WxNotify extends \WxPayNotify
 {
-    private $type;
-
-    function __construct($type = '')
-    {
-        $this->type = $type;
-    }
 
     public function NotifyProcess($data, &$msg)
     {
         if ($data['result_code'] == 'SUCCESS') {
             $orderNo = $data['out_trade_no'];
-            Db::startTrans();
-            try {
-                $order = OrderModel::where('order_no', '=', $orderNo)->lock(true)->find();
-                if ($order->status == 1) {
-                    $service = new OrderService();
-                    $stockStatus = $service->checkOrderStock($order->id);
-                    if ($stockStatus['pass']) {
-                        $this->updateOrderStatus($order->id, true);
-                        $this->reduceStock($stockStatus);
-                    } else {
-                        $this->updateOrderStatus($order->id, false);
+            $attach = $data['attach'];
+            if ('enroll' == $attach) {
+                //支付保证金回调
+                
+                Db::startTrans();
+                try {
+                    $enrollOrder = AuctionEnrollModel::where('enroll_order_no', '=', $orderNo)->lock(true)->find();
+                    if ($enrollOrder->pay_status == PayStatus::UNPAYALL) {
+                        AuctionEnrollModel::where('enroll_order_no', '=', $orderNo)->update(['pay_status'=>PayStatus::PAYDEPOSIT, 'enroll_pay_time'=>time()]);
                     }
+                    Db::commit();
+                    return true;
+                } catch (Exception $ex) {
+                    Db::rollback();
+                    Log::error($ex);
+                    return false;
                 }
-                Db::commit();
-                return true;
-            } catch (Exception $ex) {
-                Db::rollback();
-                Log::error($ex);
-                return false;
+                
+
+            } else if ('final' == $attach) {
+                //支付尾款回调
+                Db::startTrans();
+                try {
+                    $enrollOrder = AuctionEnrollModel::where('final_order_no', '=', $orderNo)->lock(true)->find();
+                    if ($enrollOrder->pay_status == PayStatus::PAYONLYDEPOSIT) {
+                        AuctionEnrollModel::where('final_order_no', '=', $orderNo)->update(['pay_status'=>PayStatus::PAYALL, 'final_pay_time'=>time()]);
+                    }
+                    Db::commit();
+                    return true;
+                } catch (Exception $ex) {
+                    Db::rollback();
+                    Log::error($ex);
+                    return false;
+                }
 
             }
         } else {

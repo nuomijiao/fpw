@@ -66,11 +66,11 @@ class WxPay
         $wxOrderData = new \WxPayUnifiedOrder();
         if ('enroll' == $this->type) {
             $wxOrderData->SetOut_trade_no($this->enrollOrderNO);
-            $wxOrderData->SetNotify_url(config('secure.wx_enroll_pay_back_url'));
         } else if ('final' == $this->type) {
             $wxOrderData->SetOut_trade_no($this->finalOrderNo);
-            $wxOrderData->SetNotify_url(config('secure.wx_final_pay_back_url'));
         }
+        $wxOrderData->SetAttach($this->type);
+        $wxOrderData->SetNotify_url(config('secure.wx_pay_back_url'));
         $wxOrderData->SetTrade_type('JSAPI');
         $wxOrderData->SetTotal_fee($totalPrice * 100);
         $wxOrderData->SetBody('纺拍网');
