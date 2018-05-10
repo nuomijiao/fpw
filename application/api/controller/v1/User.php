@@ -28,6 +28,7 @@ class User extends BaseController
                 $vars = json_decode($vars, true);
             }
             if (!array_key_exists('uid', $vars)) {
+                unset($vars['openid']);
                 return json([
                     'error_code' => 'ok',
                     'user_info' => $vars,
