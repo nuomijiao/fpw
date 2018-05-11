@@ -78,7 +78,7 @@ class Goods extends BaseModel
             'incrementsRecord' => function($que){
                 $que->with([
                     'user' => function($qu){
-                        $qu->field(['id', 'nickname', 'username', 'mobile']);
+                        $qu->field(['id', 'nickname', 'username']);
                     }
                 ])->order('quoted_price', 'desc');
             }
@@ -94,12 +94,12 @@ class Goods extends BaseModel
             //检查支付状态
             $payStatus = AuctionEnrollModel::getPayStatus($uid, $goodsID);
             if (!$payStatus) {
-                $goodsDetail['user']['pay_status'] = PayStatus::UNPAYALL;
+                $goodsDetail['pay_status'] = PayStatus::UNPAYALL;
             } else {
-                $goodsdetail['user']['pay_status'] = $payStatus;
+                $goodsdetail['pay_status'] = $payStatus;
             }
         } else {
-            $goodsDetail['user']['pay_status'] = PayStatus::UNPAYALL;
+            $goodsDetail['pay_status'] = PayStatus::UNPAYALL;
         }
         return $goodsDetail;
     }
