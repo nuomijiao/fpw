@@ -72,7 +72,7 @@ class Goods extends BaseModel
             'incrementsRecord' => function($que){
                 $que->with([
                     'user' => function($qu){
-                        $qu->field(['id', 'nickname', 'username']);
+                        $qu->field(['id', 'nickname', 'username', 'mobile']);
                     }
                 ])->order('quoted_price', 'desc');
             }
@@ -85,7 +85,7 @@ class Goods extends BaseModel
             $goodsDetail['is_enroll'] = $isEnroll;
             if (time() > $goodsDetail['end_time']) {
                 $isPayFinal = IncrementsRecordModel::checkBidValid($uid, $goodsID);
-                if (!$isPayFinal) {
+                if ($isPayFinal) {
                     $goodsDetail['is_pay_final'] = 1;
                 } else {
                     $goodsDetail['is_pay_final'] = 0;
@@ -95,6 +95,7 @@ class Goods extends BaseModel
             }
         } else {
             $goodsDetail['is_enroll'] = 0;
+            $goodsDetail['is_pay_final'] = 0;
         }
         return $goodsDetail;
     }

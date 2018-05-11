@@ -24,9 +24,11 @@ class IncrementsRecord extends BaseModel
     public static function checkBidValid($uid, $goodsID)
     {
         $bid = self::where('goods_id', '=', $goodsID)->where('quoted_price', '=', function($query)use($uid, $goodsID) {
-            $query->name('increments_record')->where(['user_id' => $uid, 'goods_id' => $goodsID])->field('quoted_price')->order('quoted_price', 'desc')->limit(1);
+            $query->name('increments_record')->where(['goods_id' => $goodsID])->field('quoted_price')->order('quoted_price', 'desc')->limit(1);
         })->find();
-        if ($bid->user_id == $uid) {
+        if(!$bid) {
+            return false;
+        } else if ($bid->user_id == $uid)  {
             return $bid->quoted_price;
         } else {
             return false;
