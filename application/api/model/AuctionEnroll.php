@@ -16,20 +16,26 @@ class AuctionEnroll extends BaseModel
     protected $autoWriteTimestamp = true;
     protected $updateTime = false;
 
-    public static function isEnroll($uid, $goodsID)
-    {
-        $isEnroll = self::where(['user_id' => $uid, 'goods_id' => $goodsID, 'pay_status' => PayStatus::PAYDEPOSIT])->find();
-        if ($isEnroll) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
+//    public static function isEnroll($uid, $goodsID)
+//    {
+//        $isEnroll = self::where(['user_id' => $uid, 'goods_id' => $goodsID, 'pay_status' => PayStatus::PAYDEPOSIT])->find();
+//        if ($isEnroll) {
+//            return 1;
+//        } else {
+//            return 0;
+//        }
+//    }
 
     public static function isPay($uid, $goodsID)
     {
-        $isPay = self::where(['user_id' => $uid, 'goods_id' => $goodsID])->find();
-        return $isPay;
+        $payInfo = self::where(['user_id' => $uid, 'goods_id' => $goodsID])->find();
+        return $payInfo;
+    }
+
+    public static function getPayStatus($uid, $goodsID)
+    {
+        $payStatus = self::where(['user_id' => $uid, 'goods_id' => $goodsID])->field('pay_status')->find();
+        return $payStatus;
     }
 
 }

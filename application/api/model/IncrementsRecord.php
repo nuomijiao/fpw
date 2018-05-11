@@ -28,7 +28,7 @@ class IncrementsRecord extends BaseModel
         })->find();
         if(!$bid) {
             return false;
-        } else if ($bid->user_id == $uid)  {
+        } else if ($bid->user_id == $uid) {
             return $bid->quoted_price;
         } else {
             return false;

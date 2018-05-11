@@ -11,6 +11,7 @@ namespace app\api\model;
 use app\api\model\GoodsHits as GoodsHitsModel;
 use app\api\model\AuctionEnroll as AuctionEnrollModel;
 use app\api\model\IncrementsRecord as IncrementsRecordModel;
+use app\lib\enum\PayStatus;
 
 class Goods extends BaseModel
 {
@@ -50,6 +51,11 @@ class Goods extends BaseModel
         return $this->hasMany('IncrementsRecord', 'goods_id', 'id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo('User', 'user_id', 'id');
+    }
+
     public static function getAllByUser($uid, $page, $size)
     {
         $pagingData = self::with(['mainImg', 'detailImg'])->where('user_id', '=', $uid)->paginate($size, true, ['page' => $page]);
@@ -76,26 +82,24 @@ class Goods extends BaseModel
                     }
                 ])->order('quoted_price', 'desc');
             }
+        ])->with([
+            'user' => function($q){
+                $q->field(['id', 'mobile']);
+            }
         ])->with(['detailImg'])->find($goodsID);
         $goodsDetail = $goods;
         $goodsCount = GoodsHitsModel::getClickCount($goodsID);
         $goodsDetail['click_count'] = $goodsCount;
         if (!empty(trim($uid))) {
-            $isEnroll = AuctionEnrollModel::isEnroll($uid, $goodsID);
-            $goodsDetail['is_enroll'] = $isEnroll;
-            if (time() > $goodsDetail['end_time']) {
-                $isPayFinal = IncrementsRecordModel::checkBidValid($uid, $goodsID);
-                if ($isPayFinal) {
-                    $goodsDetail['is_pay_final'] = 1;
-                } else {
-                    $goodsDetail['is_pay_final'] = 0;
-                }
+            //检查支付状态
+            $payStatus = AuctionEnrollModel::getPayStatus($uid, $goodsID);
+            if (!$payStatus) {
+                $goodsDetail['user']['pay_status'] = PayStatus::UNPAYALL;
             } else {
-                $goodsDetail['is_pay_final'] = 0;
+                $goodsdetail['user']['pay_status'] = $payStatus;
             }
         } else {
-            $goodsDetail['is_enroll'] = 0;
-            $goodsDetail['is_pay_final'] = 0;
+            $goodsDetail['user']['pay_status'] = PayStatus::UNPAYALL;
         }
         return $goodsDetail;
     }
