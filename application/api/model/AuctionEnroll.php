@@ -13,18 +13,16 @@ use app\lib\enum\PayStatus;
 
 class AuctionEnroll extends BaseModel
 {
-    protected $autoWriteTimestamp = true;
-    protected $updateTime = false;
 
-//    public static function isEnroll($uid, $goodsID)
-//    {
-//        $isEnroll = self::where(['user_id' => $uid, 'goods_id' => $goodsID, 'pay_status' => PayStatus::PAYDEPOSIT])->find();
-//        if ($isEnroll) {
-//            return 1;
-//        } else {
-//            return 0;
-//        }
-//    }
+    public static function isEnroll($uid, $goodsID)
+    {
+        $isEnroll = self::where(['user_id' => $uid, 'goods_id' => $goodsID, 'pay_status' => PayStatus::PAYDEPOSIT])->find();
+        if ($isEnroll) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 
     public static function isPay($uid, $goodsID)
     {
