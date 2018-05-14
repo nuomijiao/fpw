@@ -19,6 +19,7 @@ use app\api\validate\PictureNew;
 use app\lib\exception\GoodsException;
 use app\lib\exception\ParameterException;
 use app\lib\exception\SuccessMessage;
+use app\lib\exception\TokenException;
 use think\Cache;
 use think\Exception;
 use app\api\model\Goods as GoodsModel;
