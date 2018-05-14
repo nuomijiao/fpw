@@ -137,7 +137,7 @@ class Goods extends BaseController
         if (!empty(trim($token))) {
             $vars = Cache::get($token);
             if(!$vars) {
-                throw new TokenException();
+                $goods = GoodsModel::getGoodsDetail($id);
             }
             if (!is_array($vars)) {
                 $vars = json_decode($vars, true);
