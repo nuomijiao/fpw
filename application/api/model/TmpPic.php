@@ -37,4 +37,10 @@ class TmpPic extends Model
         self::where('img_url', 'in', $img)->delete();
     }
 
+    public static function getDelPic()
+    {
+        $delPic = self::where('create_time', '>', time()-2*24*3600)->select();
+        return $delPic;
+    }
+
 }

@@ -29,6 +29,8 @@ Route::get('api/:version/token/weixin', 'api/:version.Token/getWeiXinToken');
 Route::post('api/:version/goods/upload_img', 'api/:version.Goods/uploadImg');
 //删除商品图片
 Route::get('api/:version/del_tmp_pic/:name', 'api/:version.Goods/deleteTmpPic');
+//自动删除垃圾商品图片
+Route::get('api/:version/auto_del_tmp_pic', 'api/:version.Goods/autoDelTmpPic');
 //上传商品属性
 Route::post('api/:version/goods/upload_info', 'api/:version.Goods/addGoods');
 //查询用户商品

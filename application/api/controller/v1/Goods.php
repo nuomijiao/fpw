@@ -9,6 +9,8 @@
 namespace app\api\controller\v1;
 
 use app\api\controller\BaseController;
+use app\api\model\Goods as GoodsModel;
+use app\api\model\GoodsHits as GoodsHitsModel;
 use app\api\model\TmpPic as TmpPicModel;
 use app\api\service\Goods as GoodsService;
 use app\api\service\Token as TokenService;
@@ -19,11 +21,8 @@ use app\api\validate\PictureNew;
 use app\lib\exception\GoodsException;
 use app\lib\exception\ParameterException;
 use app\lib\exception\SuccessMessage;
-use app\lib\exception\TokenException;
 use think\Cache;
 use think\Exception;
-use app\api\model\Goods as GoodsModel;
-use app\api\model\GoodsHits as GoodsHitsModel;
 
 class Goods extends BaseController
 {
@@ -74,6 +73,7 @@ class Goods extends BaseController
         $goods->delTmpPic($name);
         throw new SuccessMessage();
     }
+
 
     public function addGoods()
     {
@@ -157,6 +157,20 @@ class Goods extends BaseController
             throw new GoodsException();
         }
         return json(['error_code'=>'ok', 'goods' =>$goods]);
+    }
+
+    public function autoDelTmpPic()
+    {
+        $delPic = TmpPicModel::getDelPic();
+        if (!$delPic->isEmpty()) {
+            $picArray = $delPic->toArray();
+            $picImgUrl = [];
+            foreach ($picArray as $item) {
+                unlink(ROOT_PATH.'public_html'.DS.'tmp_pic'.DS.$item['img_url']);
+                array_push($picImgUrl, $item['img_url']);
+            }
+            TmpPicModel::DelTmpPicByImgUrl($picImgUrl);
+        }
     }
 
 }
