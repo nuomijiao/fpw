@@ -39,7 +39,7 @@ class TmpPic extends Model
 
     public static function getDelPic()
     {
-        $delPic = self::where('create_time', '>', time()-2*24*3600)->select();
+        $delPic = self::where('create_time', '<', time()-2*24*3600)->select();
         return $delPic;
     }
 
