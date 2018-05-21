@@ -162,6 +162,7 @@ class Goods extends BaseController
     public function autoDelTmpPic()
     {
         $delPic = TmpPicModel::getDelPic();
+        return json($delPic);
         if (!$delPic->isEmpty()) {
             $picArray = $delPic->toArray();
             $picImgUrl = [];
