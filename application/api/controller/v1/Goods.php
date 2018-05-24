@@ -97,7 +97,7 @@ class Goods extends BaseController
                 'errorCode' => 30003
             ]);
         }
-        $data = $pagingGoods->visible(['id', 'start_time','end_time','goods_name', 'current_price', 'main_img', 'check_status'])->toArray();
+        $data = $pagingGoods->visible(['id', 'start_time','end_time','goods_name', 'current_price', 'main_img', 'check_status', 'goods_status'])->toArray();
         return json([
             'error_code' => 'ok',
             'data' => $data,
@@ -114,7 +114,7 @@ class Goods extends BaseController
                 'errorCode' => 30003
             ]);
         }
-        $data = $pagingGoods->visible(['id', 'start_time','end_time','goods_name', 'current_price', 'main_img'])->toArray();
+        $data = $pagingGoods->visible(['id', 'start_time','end_time','goods_name', 'current_price', 'main_img', 'goods_status'])->toArray();
         return json([
             'error_code' => 'ok',
             'data' => $data,
@@ -131,7 +131,7 @@ class Goods extends BaseController
                 'errorCode' => 30003
             ]);
         }
-        $data = $pagingGoods->visible(['id', 'start_time','end_time','goods_name', 'current_price', 'main_img'])->toArray();
+        $data = $pagingGoods->visible(['id', 'start_time','end_time','goods_name', 'current_price', 'main_img', 'goods_status'])->toArray();
         return json([
             'error_code' => 'ok',
             'data' => $data,
