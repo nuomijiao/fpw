@@ -39,6 +39,8 @@ Route::get('api/:version/goods/by_user', 'api/:version.Goods/getAllGoodsByUser')
 Route::get('api/:version/goods/all', 'api/:version.Goods/getAllGoods');
 //查询某一商品详细信息
 Route::get('api/:version/goods/:id', 'api/:version.Goods/getOneDetail');
+//按商品名称搜索商品
+Route::post('api/:version/goods/by_name', 'api/:version.Goods/searchGoodsByName');
 
 //添加用户地址
 Route::post('api/:version/address/add', 'api/:version.Address/createAddress');
