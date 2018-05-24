@@ -113,7 +113,7 @@ class Goods extends BaseModel
 
     public static function getGoodsByName($name, $page, $size)
     {
-        $pagingData = self::with(['mainImg', 'detailImg'])->where(['recycle'=>GoodsRecycleEnum::UNRECYCLE,'check_status'=>GoodsCheckStatusEnum::CHECKPASS])->where('goods_name', 'like', "%{$name}%")->paginate($size, true, ['page' => $page]);
+        $pagingData = self::with(['mainImg', 'detailImg'])->where(['recycle'=>GoodsRecycleEnum::UNRECYCLE,'check_status'=>GoodsCheckStatusEnum::CHECKPASS])->paginate($size, true, ['page' => $page]);
         return $pagingData;
     }
 
