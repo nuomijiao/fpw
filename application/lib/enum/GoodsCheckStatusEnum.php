@@ -9,7 +9,7 @@
 namespace app\lib\enum;
 
 
-class GoodsCheckStatus
+class GoodsCheckStatusEnum
 {
     //未审核
     const UNCHECK = 0;

@@ -8,10 +8,11 @@
 
 namespace app\api\model;
 
-use app\api\model\GoodsHits as GoodsHitsModel;
 use app\api\model\AuctionEnroll as AuctionEnrollModel;
-use app\api\model\IncrementsRecord as IncrementsRecordModel;
-use app\lib\enum\PayStatus;
+use app\api\model\GoodsHits as GoodsHitsModel;
+use app\lib\enum\GoodsCheckStatusEnum;
+use app\lib\enum\GoodsRecycleEnum;
+use app\lib\enum\PayStatusEnum;
 
 class Goods extends BaseModel
 {
@@ -64,7 +65,7 @@ class Goods extends BaseModel
 
     public static function getAll($page, $size)
     {
-        $pagingData = self::with(['mainImg', 'detailImg'])->paginate($size, true, ['page' => $page]);
+        $pagingData = self::with(['mainImg', 'detailImg'])->where(['recycle'=>GoodsRecycleEnum::UNRECYCLE,'check_status'=>GoodsCheckStatusEnum::CHECKPASS])->paginate($size, true, ['page' => $page]);
         return $pagingData;
     }
 
@@ -94,12 +95,12 @@ class Goods extends BaseModel
             //检查支付状态
             $payStatus = AuctionEnrollModel::getPayStatus($uid, $goodsID);
             if (!$payStatus) {
-                $goodsDetail['pay_status'] = PayStatus::UNPAYALL;
+                $goodsDetail['pay_status'] = PayStatusEnum::UNPAYALL;
             } else {
                 $goodsdetail['pay_status'] = $payStatus;
             }
         } else {
-            $goodsDetail['pay_status'] = PayStatus::UNPAYALL;
+            $goodsDetail['pay_status'] = PayStatusEnum::UNPAYALL;
         }
         return $goodsDetail;
     }
@@ -108,6 +109,12 @@ class Goods extends BaseModel
     {
         $goods = self::field($array)->find($id);
         return $goods;
+    }
+
+    public static function getGoodsByName($name, $page, $size)
+    {
+        $pagingData = self::with(['mainImg', 'detailImg'])->where(['recycle'=>GoodsRecycleEnum::UNRECYCLE,'check_status'=>GoodsCheckStatusEnum::CHECKPASS])->where('goods_name', 'like', '%{$name}%')->paginate($size, true, ['page' => $page]);
+        return $pagingData;
     }
 
 }

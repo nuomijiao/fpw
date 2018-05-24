@@ -10,7 +10,7 @@ namespace app\api\service;
 
 
 use app\api\model\AuctionEnroll as AuctionEnrollModel;
-use app\lib\enum\PayStatus;
+use app\lib\enum\PayStatusEnum;
 use think\Db;
 use think\Exception;
 use think\Loader;
@@ -32,8 +32,8 @@ class WxNotify extends \WxPayNotify
                 Db::startTrans();
                 try {
                     $enrollOrder = AuctionEnrollModel::where('enroll_order_no', '=', $orderNo)->lock(true)->find();
-                    if ($enrollOrder->pay_status == PayStatus::UNPAYALL) {
-                        AuctionEnrollModel::where('enroll_order_no', '=', $orderNo)->update(['pay_status'=>PayStatus::PAYDEPOSIT, 'enroll_pay_time'=>time()]);
+                    if ($enrollOrder->pay_status == PayStatusEnum::UNPAYALL) {
+                        AuctionEnrollModel::where('enroll_order_no', '=', $orderNo)->update(['pay_status'=>PayStatusEnum::PAYDEPOSIT, 'enroll_pay_time'=>time()]);
                     }
                     Db::commit();
                     return true;
@@ -49,8 +49,8 @@ class WxNotify extends \WxPayNotify
                 Db::startTrans();
                 try {
                     $enrollOrder = AuctionEnrollModel::where('final_order_no', '=', $orderNo)->lock(true)->find();
-                    if ($enrollOrder->pay_status == PayStatus::PAYONLYDEPOSIT) {
-                        AuctionEnrollModel::where('final_order_no', '=', $orderNo)->update(['pay_status'=>PayStatus::PAYALL, 'final_pay_time'=>time()]);
+                    if ($enrollOrder->pay_status == PayStatusEnum::PAYONLYDEPOSIT) {
+                        AuctionEnrollModel::where('final_order_no', '=', $orderNo)->update(['pay_status'=>PayStatusEnum::PAYALL, 'final_pay_time'=>time()]);
                     }
                     Db::commit();
                     return true;

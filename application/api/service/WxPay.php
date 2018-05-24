@@ -10,7 +10,7 @@ namespace app\api\service;
 
 
 
-use app\lib\enum\PayStatus;
+use app\lib\enum\PayStatusEnum;
 use app\lib\exception\BidException;
 use app\lib\exception\TokenException;
 use think\Exception;
@@ -140,14 +140,14 @@ class WxPay
         }
 
         if ('enroll' == $this->type) {
-            if ($enrollOrFinal->pay_status >= PayStatus::PAYDEPOSIT) {
+            if ($enrollOrFinal->pay_status >= PayStatusEnum::PAYDEPOSIT) {
                 throw new BidException([
                     'msg' => '订单保证金已支付过啦',
                     'errorCode' => 50004,
                 ]);
             }
         } else if ('final' == $this->type) {
-            if ($enrollOrFinal->pay_status >= PayStatus::PAYALL) {
+            if ($enrollOrFinal->pay_status >= PayStatusEnum::PAYALL) {
                 throw new BidException([
                     'msg' => '订单尾款已支付过啦',
                     'errorCode' => 50004,

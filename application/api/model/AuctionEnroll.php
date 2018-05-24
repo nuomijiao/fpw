@@ -9,14 +9,14 @@
 namespace app\api\model;
 
 
-use app\lib\enum\PayStatus;
+use app\lib\enum\PayStatusEnum;
 
 class AuctionEnroll extends BaseModel
 {
 
     public static function isEnroll($uid, $goodsID)
     {
-        $isEnroll = self::where(['user_id' => $uid, 'goods_id' => $goodsID, 'pay_status' => PayStatus::PAYDEPOSIT])->find();
+        $isEnroll = self::where(['user_id' => $uid, 'goods_id' => $goodsID, 'pay_status' => PayStatusEnum::PAYDEPOSIT])->find();
         if ($isEnroll) {
             return 1;
         } else {

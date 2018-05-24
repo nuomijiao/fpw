@@ -105,6 +105,26 @@ class Goods extends BaseController
         ]);
     }
 
+    public function searchGoodsByName($name, $page = 1, $size = 10)
+    {
+        if (empty(trim($name))) {
+            throw new ParameterException();
+        }
+        $pagingGoods = GoodsModel::getGoodsByName($name, $page, $size);
+        if ($pagingGoods->isEmpty()) {
+            throw new GoodsException([
+                'msg' => '商品已见底线',
+                'errorCode' => 30003
+            ]);
+        }
+        $data = $pagingGoods->visible(['id', 'start_time','end_time','goods_name', 'current_price', 'main_img'])->toArray();
+        return json([
+            'error_code' => 'ok',
+            'data' => $data,
+            'current_page' => $pagingGoods->getCurrentPage(),
+        ]);
+    }
+
     public function getAllGoods($page = 1, $size = 10)
     {
         $pagingGoods = GoodsModel::getAll($page, $size);

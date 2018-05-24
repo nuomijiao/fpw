@@ -9,7 +9,7 @@
 namespace app\lib\enum;
 
 
-class PayStatus
+class PayStatusEnum
 {
     //未支付保证金
     const UNPAYALL = 1;
