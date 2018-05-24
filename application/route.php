@@ -42,6 +42,9 @@ Route::get('api/:version/goods/:id', 'api/:version.Goods/getOneDetail', [], ['id
 //按商品名称搜索商品
 Route::get('api/:version/goods/by_name', 'api/:version.Goods/searchGoodsByName');
 
+//设置开拍提醒
+Route::get('api/:version/remind', 'api/:version.goodsRemind/setRemind');
+
 //添加用户地址
 Route::post('api/:version/address/add', 'api/:version.Address/createAddress');
 //删除用户地址

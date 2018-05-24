@@ -29,6 +29,19 @@ class Goods extends BaseModel
         return $status[$value];
     }
 
+    public function getGoodsStatusAttr($value, $data)
+    {
+        $status = [1 => '即将开始', 2 => '热拍中', 3 => '已经结束'];
+        $timenow = time();
+        if ($timenow < $data['start_time']) {
+            return 1;
+        } else if ($data['start_time'] < $timenow && $timenow < $data['end_time']) {
+            return 2;
+        } else {
+            return 3;
+        }
+    }
+
     public function mainImg()
     {
         return $this->hasMany('GoodsMainImages', 'goods_id', 'id');
