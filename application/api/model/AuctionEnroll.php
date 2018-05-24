@@ -36,4 +36,10 @@ class AuctionEnroll extends BaseModel
         return $payStatus;
     }
 
+    public static function getEnrollCount($goodsID)
+    {
+        $enrollCount = self::where(['goods_id'=>$goodsID, 'pay_status'=>PayStatusEnum::PAYDEPOSIT])->count();
+        return $enrollCount;
+    }
+
 }

@@ -107,9 +107,6 @@ class Goods extends BaseController
 
     public function searchGoodsByName($name, $page = 1, $size = 10)
     {
-        if (empty(trim($name))) {
-            throw new ParameterException();
-        }
         $pagingGoods = GoodsModel::getGoodsByName($name, $page, $size);
         if ($pagingGoods->isEmpty()) {
             throw new GoodsException([

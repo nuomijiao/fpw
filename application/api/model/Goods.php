@@ -12,7 +12,9 @@ use app\api\model\AuctionEnroll as AuctionEnrollModel;
 use app\api\model\GoodsHits as GoodsHitsModel;
 use app\lib\enum\GoodsCheckStatusEnum;
 use app\lib\enum\GoodsRecycleEnum;
+use app\lib\enum\GoodsRemindStatusEnum;
 use app\lib\enum\PayStatusEnum;
+use app\api\model\GoodsRemind as GoodsRemindModel;
 
 class Goods extends BaseModel
 {
@@ -89,8 +91,17 @@ class Goods extends BaseModel
             }
         ])->with(['detailImg'])->find($goodsID);
         $goodsDetail = $goods;
+
+        //围观数
         $goodsCount = GoodsHitsModel::getClickCount($goodsID);
         $goodsDetail['click_count'] = $goodsCount;
+        //报名数
+        $goodsEnrollCount = AuctionEnrollModel::getEnrollCount($goodsID);
+        $goodsDetail['enroll_count'] = $goodsEnrollCount;
+        //提醒数
+        $goodsRemindCount = GoodsRemindModel::getRemindCount($goodsID);
+        $goodsDetail['remind_count'] = $goodsRemindCount;
+
         if (!empty(trim($uid))) {
             //检查支付状态
             $payStatus = AuctionEnrollModel::getPayStatus($uid, $goodsID);
@@ -99,8 +110,19 @@ class Goods extends BaseModel
             } else {
                 $goodsdetail['pay_status'] = $payStatus;
             }
+            //检查设置提醒状态
+            $remindStatus = GoodsRemindModel::getRemindStatus($uid, $goodsID);
+            if (!$remindStatus) {
+                $goodsDetail['remind_status'] = GoodsRemindStatusEnum::UNREMIND;
+            } else if ($remindStatus % 2 == 0) {
+                $goodsDetail['remind_status'] = GoodsRemindStatusEnum::UNREMIND;
+            } else {
+                $goodsDetail['remind_status'] = GoodsRemindStatusEnum::REMIND;
+            }
+
         } else {
             $goodsDetail['pay_status'] = PayStatusEnum::UNPAYALL;
+            $goodsDetail['remind_status'] = GoodsRemindStatusEnum::UNREMIND;
         }
         return $goodsDetail;
     }
