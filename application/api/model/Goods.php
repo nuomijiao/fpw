@@ -31,7 +31,7 @@ class Goods extends BaseModel
 
     public function getGoodsStatusAttr($value, $data)
     {
-        $status = [1 => '即将开始', 2 => '热拍中', 3 => '已经结束'];
+//        $status = [1 => '即将开始', 2 => '热拍中', 3 => '已经结束'];
         $timenow = time();
         if ($timenow < $data['start_time']) {
             return 1;
