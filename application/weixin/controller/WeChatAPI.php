@@ -21,7 +21,7 @@ class WeChatAPI extends BaseController
         $this->appID = config('weixin.appID');
         $this->appSecret = config('weixin.appSecret');
 
-        $res = file_get_contents(config('weixin.accessTokenUrl'));
+        $res = file_get_contents('wx_access_token/access_token.json');
         $result = json_decode($res, true);
         $this->accessToken = $result['access_token'];
         file_put_contents('aa.txt', $this->accessToken);
