@@ -25,7 +25,8 @@ class WeChatAPI extends BaseController
         $result = json_decode($res, true);
         $this->accessToken = $result['access_token'];
         $expires_time = $result['expires_time'];
-        return $expires_time;
+        file_put_contents('a.txt', $expires_time);
+        file_put_contents('b.txt', time());
         if (time() > $expires_time) {
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".$this->appID."&secret=".$this->appSecret;
             $res = $this->httpRequest($url);
