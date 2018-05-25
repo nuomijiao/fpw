@@ -24,6 +24,7 @@ class WeChatAPI extends BaseController
         $res = file_get_contents(config('weixin.accessTokenUrl'));
         $result = json_decode($res, true);
         $this->accessToken = $result['access_token'];
+        file_put_contents('aa.txt', $this->accessToken);
         $expires_time = $result['expires_time'];
         file_put_contents('a.txt', $expires_time);
         file_put_contents('b.txt', time());
