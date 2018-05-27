@@ -41,6 +41,16 @@ Route::get('api/:version/goods/all', 'api/:version.Goods/getAllGoods');
 Route::get('api/:version/goods/:id', 'api/:version.Goods/getOneDetail', [], ['id'=>'\d+']);
 //按商品名称搜索商品
 Route::get('api/:version/goods/by_name', 'api/:version.Goods/searchGoodsByName');
+//编辑商品
+Route::get('api/:version/goods/edit/:id', 'api/:version.Goods/editGoods');
+//删除商品图片
+Route::get('api/:version/goods/del_pic/:id/:pic_type', 'api/:version.Goods/delPic');
+//更新商品图片
+Route::post('api/:version/goods/update_img/:id', 'api/:version.Goods/updateImg');
+//更新商品属性
+Route::post('api/:version/goods/update_info/:id', 'api/:version.Goods/updateGoodsInfo');
+//删除整条商品
+Route::get('api/:version/goods/del_goods/:id', 'api/:version.Goods/delGoods');
 
 //设置开拍提醒
 Route::get('api/:version/remind', 'api/:version.goodsRemind/setRemind');

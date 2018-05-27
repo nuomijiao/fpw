@@ -24,4 +24,20 @@ class GoodsMainImages extends BaseModel
     {
         return $this->prefixImgUrl($value, $data);
     }
+
+    public function goods()
+    {
+        return $this->belongsTo('Goods', 'goods_id', 'id');
+    }
+
+    public static function getPicInfo($id)
+    {
+        $pic = self::with([
+            'goods' => function ($query) {
+                $query->field(['id', 'user_id']);
+            }
+        ])->field(['goods_id', 'img_url'=>'img'])->find($id);
+        return $pic;
+    }
+
 }

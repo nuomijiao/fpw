@@ -21,8 +21,11 @@ use app\api\validate\PictureNew;
 use app\lib\exception\GoodsException;
 use app\lib\exception\ParameterException;
 use app\lib\exception\SuccessMessage;
+use app\lib\exception\TokenException;
 use think\Cache;
 use think\Exception;
+use app\api\model\GoodsDetailImages as GoodsDetialImagesModel;
+use app\api\model\GoodsMainImages as GoodsMainImagesModel;
 
 class Goods extends BaseController
 {
@@ -37,7 +40,7 @@ class Goods extends BaseController
         $picObject = $pic['file'];
         $picType = $request->param('pic_type');
 
-        //图片原始名称
+        //图片原始信息
         $originInfo = $picObject->getInfo();
         //验证上传文件是否为图片格式
         $goods = new GoodsService($uid);
@@ -154,26 +157,95 @@ class Goods extends BaseController
         if (!empty(trim($token))) {
             $vars = Cache::get($token);
             if(!$vars) {
-                $goods = GoodsModel::getGoodsDetail($id);
+                $goods = GoodsModel::getGoodsDetail($id, '', 'show_detail');
             } else {
                 if (!is_array($vars)) {
                     $vars = json_decode($vars, true);
                 }
                 if (array_key_exists('uid', $vars)) {
                     $uid = $vars['uid'];
-                    $goods = GoodsModel::getGoodsDetail($id, $uid);
+                    $goods = GoodsModel::getGoodsDetail($id, $uid, 'show_detail');
                 } else {
-                    $goods = GoodsModel::getGoodsDetail($id);
+                    $goods = GoodsModel::getGoodsDetail($id, '', 'show_detail');
                 }
             }
         } else {
-            $goods = GoodsModel::getGoodsDetail($id);
+            $goods = GoodsModel::getGoodsDetail($id, '', 'show_detail');
         }
 
         if (!$goods) {
             throw new GoodsException();
         }
         return json(['error_code'=>'ok', 'goods' =>$goods]);
+    }
+
+    public function editGoods($id)
+    {
+        (new IDMustBePostiveInt())->goCheck();
+        $this->checkGoodsValid($id);
+        $goodsInfo = GoodsModel::getGoodsDetail($id);
+        return json(['error_code'=>'ok', 'goods' =>$goodsInfo]);
+    }
+
+    public function delPic($id, $pic_type)
+    {
+        (new IDMustBePostiveInt())->goCheck();
+        (new PictureNew())->goCheck();
+        $goodsInfo = $this->checkPicValid($id, $pic_type);
+        $goods = new GoodsService($goodsInfo['uid']);
+        $goods->delPic($id, $pic_type, $goodsInfo['img']);
+        throw new SuccessMessage();
+    }
+
+    public function updateImg($id)
+    {
+        (new IDMustBePostiveInt())->goCheck();
+        $validate = new PictureNew();
+        $request = $validate->goCheck();
+        //根据Token来获取uid
+        $uid = $this->checkGoodsValid($id);
+        $pic = $request->file();
+
+        $picObject = $pic['file'];
+        $picType = $request->param('pic_type');
+
+        //图片原始信息
+        $originInfo = $picObject->getInfo();
+        //验证上传文件是否为图片格式
+        $goods = new GoodsService($uid);
+        $result = $goods->checkIsImg($originInfo);
+        if ($result) {
+            $goods->updateImg($id, $picObject, $picType);
+            throw new SuccessMessage();
+        } else {
+            throw new ParameterException([
+                'msg' => '上传文件格式有误',
+            ]);
+        }
+    }
+
+    public function updateGoodsInfo($id)
+    {
+        (new IDMustBePostiveInt())->goCheck();
+        $validate = new GoodsNew();
+        $request = $validate->goCheck();
+        $uid = $this->checkGoodsValid($id);
+        $dataArray = $validate->getDataByRule($request->post());
+        GoodsModel::where(['id'=>$id, 'user_id'=>$uid])->update($dataArray);
+        throw new SuccessMessage();
+    }
+
+    public function delGoods($id)
+    {
+        (new IDMustBePostiveInt())->goCheck();
+        $uid = $this->checkGoodsValid($id);
+        $goods = new GoodsService($uid);
+        $picArray = $goods->getAllPic($id);
+        foreach ($picArray as $item) {
+            unlink(ROOT_PATH.'public_html'.$item['img']);
+        }
+        $goods->delGoods($id);
+        throw new SuccessMessage();
     }
 
     public function autoDelTmpPic()
@@ -190,4 +262,46 @@ class Goods extends BaseController
         }
     }
 
+    public function checkGoodsValid($goodsID)
+    {
+        $goods = GoodsModel::get($goodsID);
+        if (!$goods) {
+            throw new GoodsException();
+        }
+        $user_id = TokenService::isValidOperate($goods->user_id);
+        if (!$user_id) {
+            throw new TokenException([
+                'msg' => '商品与用户不匹配',
+                'errorCode' => 10003,
+            ]);
+        } else {
+            return $user_id;
+        }
+    }
+
+    public function checkPicValid($picID, $type)
+    {
+        if ('DetailImg' == $type) {
+            $pic = GoodsDetialImagesModel::getPicInfo($picID);
+        } else if ('MainImg' == $type) {
+            $pic = GoodsMainImagesModel::getPicInfo($picID);
+        }
+        if (!$pic) {
+            throw new GoodsException([
+                'msg' => '商品图片不存在，或已被删除',
+                'errorCode' => 30002,
+            ]);
+        }
+        $user_id = TokenService::isValidOperate($pic->goods['user_id']);
+        $goodsInfo = ['img' => $pic['img'], 'uid' => $user_id];
+        if (!$user_id) {
+            throw new TokenException([
+                'msg' => '图片与用户不匹配',
+                'errorCode' => 10003,
+            ]);
+        } else {
+            return $goodsInfo;
+        }
+    }
+    
 }

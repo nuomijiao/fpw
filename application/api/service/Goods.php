@@ -11,7 +11,11 @@ namespace app\api\service;
 use app\api\model\Goods as GoodsModel;
 use app\api\model\TmpPic as TmpPicModel;
 use app\lib\exception\GoodsException;
+use think\Db;
 use think\Exception;
+use app\api\model\GoodsDetailImages as GoodsDetailImagesModel;
+use app\api\model\GoodsMainImages as GoodsMainImagesModel;
+use think\Log;
 
 class Goods
 {
@@ -81,6 +85,16 @@ class Goods
         }
     }
 
+    public function delPic($id, $picType, $imgUrl)
+    {
+        unlink(ROOT_PATH.'public_html'.$imgUrl);
+        if ('DetailImg' == $picType) {
+            GoodsDetailImagesModel::destroy($id);
+        } else if ('MainImg' == $picType) {
+            GoodsMainImagesModel::destroy($id);
+        }
+    }
+
     public function checkIsImg($fileInfo)
     {
         $ext = pathinfo($fileInfo['name'],PATHINFO_EXTENSION);
@@ -91,5 +105,45 @@ class Goods
         }
     }
 
+    public function updateImg($goodsID, $imgObj, $picType)
+    {
+        $info = $imgObj->rule('uniqid')->move(ROOT_PATH.'public_html'.DS.'goods_pic');
+        if ($info) {
+            $dataArray = [
+                'img_url' => $info->getSaveName(),
+                'img_from' => 1,
+                'goods_id' => $goodsID,
+            ];
+            if ('DetailImg' == $picType) {
+                GoodsDetailImagesModel::create($dataArray);
+            } else if ('MainImg' == $picType) {
+                GoodsMainImagesModel::create($dataArray);
+            }
+        } else {
+            throw new Exception($info->getError());
+        }
+    }
+
+    public function getAllPic($goodsID)
+    {
+        $mainImg = GoodsMainImagesModel::where('goods_id', '=', $goodsID)->field(['img_url'=>'img'])->select()->toArray();
+        $detailImg = GoodsDetailImagesModel::where('goods_id', '=', $goodsID)->field(['img_url'=>'img'])->select()->toArray();
+        $allPic = array_merge($mainImg, $detailImg);
+        return $allPic;
+    }
+
+    public function delGoods($goodsID)
+    {
+        Db::startTrans();
+        try {
+            GoodsDetailImagesModel::where('goods_id', '=', $goodsID)->delete();
+            GoodsMainImagesModel::where('goods_id', '=', $goodsID)->delete();
+            GoodsModel::destroy($goodsID);
+            Db::commit();
+        } catch (Exception $ex) {
+            Db::rollback();
+            Log::error($ex);
+        }
+    }
 
 }
