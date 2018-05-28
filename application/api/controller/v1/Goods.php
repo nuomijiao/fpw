@@ -157,20 +157,20 @@ class Goods extends BaseController
         if (!empty(trim($token))) {
             $vars = Cache::get($token);
             if(!$vars) {
-                $goods = GoodsModel::getGoodsDetail($id, '', 'show_detail');
+                $goods = GoodsModel::getGoodsDetail($id);
             } else {
                 if (!is_array($vars)) {
                     $vars = json_decode($vars, true);
                 }
                 if (array_key_exists('uid', $vars)) {
                     $uid = $vars['uid'];
-                    $goods = GoodsModel::getGoodsDetail($id, $uid, 'show_detail');
+                    $goods = GoodsModel::getGoodsDetail($id, $uid);
                 } else {
-                    $goods = GoodsModel::getGoodsDetail($id, '', 'show_detail');
+                    $goods = GoodsModel::getGoodsDetail($id);
                 }
             }
         } else {
-            $goods = GoodsModel::getGoodsDetail($id, '', 'show_detail');
+            $goods = GoodsModel::getGoodsDetail($id);
         }
 
         if (!$goods) {
@@ -182,8 +182,8 @@ class Goods extends BaseController
     public function editGoods($id)
     {
         (new IDMustBePostiveInt())->goCheck();
-        $this->checkGoodsValid($id);
-        $goodsInfo = GoodsModel::getGoodsDetail($id);
+//        $this->checkGoodsValid($id);
+        $goodsInfo = GoodsModel::getGoodsInfoDetail($id);
         return json(['error_code'=>'ok', 'goods' =>$goodsInfo]);
     }
 

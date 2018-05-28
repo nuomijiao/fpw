@@ -20,6 +20,11 @@ class GoodsDetailImages extends BaseModel
         return $this->prefixImgUrl($value, $data);
     }
 
+    public function getUrlAttr($value, $data)
+    {
+        return $this->prefixImgUrl($value, $data);
+    }
+
     public function goods()
     {
         return $this->belongsTo('Goods', 'goods_id', 'id');

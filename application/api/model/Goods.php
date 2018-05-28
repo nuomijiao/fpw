@@ -84,7 +84,7 @@ class Goods extends BaseModel
         return $pagingData;
     }
 
-    public static function getGoodsDetail($goodsID, $uid = '', $type = '')
+    public static function getGoodsDetail($goodsID, $uid = '')
     {
         $goods = self::with([
             'mainImg' => function($query){
@@ -105,41 +105,55 @@ class Goods extends BaseModel
         ])->with(['detailImg'])->find($goodsID);
         $goodsDetail = $goods;
 
-        if ('show_detail' == $type) {
-            //围观数
-            $goodsCount = GoodsHitsModel::getClickCount($goodsID);
-            $goodsDetail['click_count'] = $goodsCount;
-            //报名数
-            $goodsEnrollCount = AuctionEnrollModel::getEnrollCount($goodsID);
-            $goodsDetail['enroll_count'] = $goodsEnrollCount;
-            //提醒数
-            $goodsRemindCount = GoodsRemindModel::getRemindCount($goodsID);
-            $goodsDetail['remind_count'] = $goodsRemindCount;
 
-            if (!empty(trim($uid))) {
-                //检查支付状态
-                $payStatus = AuctionEnrollModel::getPayStatus($uid, $goodsID);
-                if (!$payStatus) {
-                    $goodsDetail['pay_status'] = PayStatusEnum::UNPAYALL;
-                } else {
-                    $goodsdetail['pay_status'] = $payStatus;
-                }
-                //检查设置提醒状态
-                $remindStatus = GoodsRemindModel::getRemindStatus($uid, $goodsID);
-                if (!$remindStatus) {
-                    $goodsDetail['remind_status'] = GoodsRemindStatusEnum::UNREMIND;
-                } else if ($remindStatus % 2 == 0) {
-                    $goodsDetail['remind_status'] = GoodsRemindStatusEnum::UNREMIND;
-                } else {
-                    $goodsDetail['remind_status'] = GoodsRemindStatusEnum::REMIND;
-                }
+        //围观数
+        $goodsCount = GoodsHitsModel::getClickCount($goodsID);
+        $goodsDetail['click_count'] = $goodsCount;
+        //报名数
+        $goodsEnrollCount = AuctionEnrollModel::getEnrollCount($goodsID);
+        $goodsDetail['enroll_count'] = $goodsEnrollCount;
+        //提醒数
+        $goodsRemindCount = GoodsRemindModel::getRemindCount($goodsID);
+        $goodsDetail['remind_count'] = $goodsRemindCount;
 
-            } else {
+        if (!empty(trim($uid))) {
+            //检查支付状态
+            $payStatus = AuctionEnrollModel::getPayStatus($uid, $goodsID);
+            if (!$payStatus) {
                 $goodsDetail['pay_status'] = PayStatusEnum::UNPAYALL;
-                $goodsDetail['remind_status'] = GoodsRemindStatusEnum::UNREMIND;
+            } else {
+                $goodsdetail['pay_status'] = $payStatus;
             }
+            //检查设置提醒状态
+            $remindStatus = GoodsRemindModel::getRemindStatus($uid, $goodsID);
+            if (!$remindStatus) {
+                $goodsDetail['remind_status'] = GoodsRemindStatusEnum::UNREMIND;
+            } else if ($remindStatus % 2 == 0) {
+                $goodsDetail['remind_status'] = GoodsRemindStatusEnum::UNREMIND;
+            } else {
+                $goodsDetail['remind_status'] = GoodsRemindStatusEnum::REMIND;
+            }
+
+        } else {
+            $goodsDetail['pay_status'] = PayStatusEnum::UNPAYALL;
+            $goodsDetail['remind_status'] = GoodsRemindStatusEnum::UNREMIND;
         }
+
         return $goodsDetail;
+    }
+
+    public static function getGoodsInfoDetail($goodsID)
+    {
+        $goods = self::with([
+            'mainImg' => function($query){
+                $query->field(['id', 'img_url'=>'url', 'goods_id', 'img_from']);
+            }
+        ])->with([
+            'detailImg' => function($que){
+                $que->field(['id', 'img_url'=>'url', 'goods_id', 'img_from']);
+            }
+        ])->find($goodsID);
+        return $goods;
     }
 
     public static function getGoodsInfo($id, $array = [])
