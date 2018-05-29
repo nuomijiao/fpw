@@ -80,7 +80,7 @@ class Goods extends BaseController
 
     public function addGoods()
     {
-        $validate = new GoodsNew();
+        $validate = new GoodsNew('upload');
         $request = $validate->goCheck();
         $uid = TokenService::getCurrentUid();
         $dataArray = $validate->getDataByRule($request->post());
@@ -227,7 +227,7 @@ class Goods extends BaseController
     public function updateGoodsInfo($id)
     {
         (new IDMustBePostiveInt())->goCheck();
-        $validate = new GoodsNew();
+        $validate = new GoodsNew('update');
         $request = $validate->goCheck();
         $uid = $this->checkGoodsValid($id);
         $dataArray = $validate->getDataByRule($request->post());
