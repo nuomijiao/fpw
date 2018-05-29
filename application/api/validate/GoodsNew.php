@@ -11,6 +11,7 @@ namespace app\api\validate;
 
 class GoodsNew extends BaseValidate
 {
+
     protected $rule = [
         'main_img_url' => 'require|array',
         'detail_img_url' => 'require|array',

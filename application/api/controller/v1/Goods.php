@@ -182,7 +182,7 @@ class Goods extends BaseController
     public function editGoods($id)
     {
         (new IDMustBePostiveInt())->goCheck();
-//        $this->checkGoodsValid($id);
+        $this->checkGoodsValid($id);
         $goodsInfo = GoodsModel::getGoodsInfoDetail($id);
         return json(['error_code'=>'ok', 'goods' =>$goodsInfo]);
     }
