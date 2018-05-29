@@ -110,7 +110,7 @@ class Goods
         $info = $imgObj->rule('uniqid')->move(ROOT_PATH.'public_html'.DS.'goods_pic');
         if ($info) {
             $dataArray = [
-                'img_url' => $info->getSaveName(),
+                'img_url' => "/goods_pic/".$info->getSaveName(),
                 'img_from' => 1,
                 'goods_id' => $goodsID,
             ];
